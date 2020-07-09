@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Runshuffle</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="places_api">
+   AIzaSyCn_Rpi7ierJ-yxJS-xCGSMfAjSfoz7_u4
+    </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    AIzaSyAWJT-MNjP_WOSmmiponjy6bppH1L1-3Pg
+
+</resources>

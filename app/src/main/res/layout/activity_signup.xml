@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/backgroundColor"
+    android:padding="40dp"
+    android:id="@+id/linearLayout"
+    android:onClick="getclearText"
+    android:layout_height="match_parent"
+    tools:context=".Activities.SignupActivity">
+    <TextView
+        android:textColor="@color/textColor"
+        android:layout_marginTop="60dp"
+        android:layout_gravity="center"
+        android:textSize="35sp"
+        android:text="Runshuffle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:id="@+id/edt_name"
+        android:singleLine="true"
+        android:layout_marginTop="40dp"
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/textColor"
+        android:hint="Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:inputType="textEmailAddress"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:singleLine="true"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/textColor"
+        android:id="@+id/edt_email"
+        android:hint="Email"
+        android:textColorHint="@color/textColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true" />
+    <EditText
+        android:inputType="textPassword"
+        android:singleLine="true"
+        android:hint="Password"
+        android:id="@+id/edt_password"
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/textColor"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:inputType="textPassword"
+        android:singleLine="true"
+        android:layout_marginTop="15dp"
+        android:hint="Confirm Password"
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/textColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:backgroundTint="@color/btnColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:textColor="@color/textColor"
+            android:textSize="17sp"
+            android:text="By clicking agree user terms "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <Button
+        android:text="Sign up"
+        android:textColor="@color/textColor"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/custom_btn"
+        android:id="@+id/btn_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_marginTop="15dp"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_weight="1"
+            android:textSize="15sp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/txt_login"
+            android:text="Login"
+            android:textColor="@color/textColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_marginTop="10dp"
+            android:text="Forget Password"
+            android:gravity="end"
+            android:id="@+id/txt_forgot_password"
+            android:textColor="@color/textColor"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
