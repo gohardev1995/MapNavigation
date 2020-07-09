@@ -3,6 +3,7 @@ package com.invotech.runshuffle.Activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -14,11 +15,9 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -35,8 +34,12 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.gson.Gson
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.TedPermission
 import com.invotech.runshuffle.Object.SaveSharedPreference
 import com.invotech.runshuffle.R
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.listener.PermissionGrantedResponse
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -80,6 +83,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         /*arrLatlng.add(source)*/
         /*getCurrentLocation()*/
 
+                /*checkPermission()*/
+        /*checkPermission()*/
 
 
         val mapFragment = supportFragmentManager
@@ -170,23 +175,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 PERMISSION_CODE
             )
         }
-
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 REQUEST_CODE
             )
             return
+
         }
+
+
         val task: Task<Location> = fusedLocationProviderClient.lastLocation
         task.addOnSuccessListener { locateUser ->
             getLocation = LatLng(locateUser?.latitude!!, locateUser.longitude)
@@ -473,6 +474,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         destinationLocation()
     }
+
+    
 
 
 }
