@@ -79,14 +79,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_main)
         /*arrLatlng.add(source)*/
         /*getCurrentLocation()*/
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "You have already granted this permission!",
-                Toast.LENGTH_SHORT).show();
-        } else {
-            requestStoragePermission();
-        }
-
 
 
 
@@ -111,47 +103,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         //---------------------------</Google Place API KEY/>-------------------------------------//
     }
 
-    private fun requestStoragePermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-        ) {
-            val builder = AlertDialog.Builder(this).create()
-                .setTitle("Permission needed")
-                .setMessage("This permission is needed because of this and that")
-                .setPositiveButton(
-                    "ok"
-                ) { dialog, which ->
-                    ActivityCompat.requestPermissions(
-                        this@MainActivity,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                        PERMISSION_CODE
-                    )
-                }
-                .setNegativeButton(
-                    "cancel"
-                ) { dialog, which -> dialog.dismiss() }
-                builder.create()
-                builder.show()
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                PERMISSION_CODE
-            )
-        }
-
-    }
-    override fun onRequestPermissionsResult(requestCode: Int, @NonNull permissions: Array<String?>, @NonNull grantResults: IntArray) {
-        if (requestCode == PERMISSION_CODE) {
-            if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
