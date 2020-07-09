@@ -7,6 +7,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.drawable.Icon
 import android.location.Location
 import android.os.AsyncTask
 import android.os.Build
@@ -24,10 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.Polyline
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.gms.tasks.Task
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -344,13 +342,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             mMap.addMarker(MarkerOptions().position(getLocation))
             mMap.addMarker(MarkerOptions().position(destination))
 
-        } else
-        calculateRoute(source!!, destination, "driving")
-      /* mMap.addMarker(source?.let { MarkerOptions().position(it) })*/
+        } else {
+            calculateRoute(source!!, destination, "driving")
+            mMap.addMarker(MarkerOptions().position(source!!))
+            mMap.addMarker(MarkerOptions().position(destination))
+        }
 
-        mMap.addMarker(MarkerOptions().position(destination))
-        mMap.addMarker(MarkerOptions().position(source!!))
     }
+
 
     private fun calculateRoute(origin: LatLng, dest: LatLng, mode: String) {
 
@@ -475,7 +474,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         destinationLocation()
     }
 
-    
+
 
 
 }
