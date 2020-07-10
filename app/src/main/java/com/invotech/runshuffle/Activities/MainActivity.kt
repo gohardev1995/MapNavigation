@@ -3,15 +3,14 @@ package com.invotech.runshuffle.Activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.drawable.Icon
 import android.location.Location
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -32,12 +31,9 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.gson.Gson
-import com.gun0912.tedpermission.PermissionListener
-import com.gun0912.tedpermission.TedPermission
 import com.invotech.runshuffle.Object.SaveSharedPreference
 import com.invotech.runshuffle.R
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.listener.PermissionGrantedResponse
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -64,6 +60,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var destination: LatLng
     private var source: LatLng? = null
     private var REQUEST_CODE = 101
+    private var PREFS_NAME = "PrefsFile"
 
     private lateinit var autocompleteFragment: AutocompleteSupportFragment
     var placeFields = Arrays.asList(
@@ -78,10 +75,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         /*arrLatlng.add(source)*/
         /*getCurrentLocation()*/
 
-                /*checkPermission()*/
+        /*checkPermission()*/
         /*checkPermission()*/
 
 
@@ -95,8 +93,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         txt_logout.setOnClickListener(View.OnClickListener {
             SaveSharedPreference.setLoggedIn(
                 getApplicationContext(),
-                false
-            );
+                false,
+                "",""
+
+
+            )
             startActivity(Intent(this, LoginActivity::class.java))
         })
         /*new FetchURL(MapActivity.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
@@ -107,9 +108,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        getCurrentLocation()
+         getCurrentLocation()
 
 
 
@@ -158,7 +160,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         */
 
 
-
         }
 
 
@@ -175,7 +176,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -267,7 +275,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     fun getSourceLocation(view: View) {
         mMap.clear()
 
-        getCurrentLocation()
+        /*getCurrentLocation()*/
 
 
         /*getsourceLocation()*/
@@ -276,6 +284,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     //-----------------------------------<Function to Get Source>---------------------------------//
     //----------------------------------- Function to Get Destination-----------------------------//
     fun getDestinationLocation(view: View) {
+        edt_destination.text = null
+
 
     }
 
@@ -313,7 +323,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         DestDialog.setView(customDialog)
         DestDialog.show()
 
-
     }
 
     //-----------------------------------</Function to Get Destination/>--------------------------//
@@ -334,19 +343,52 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //--------------------Function to Create Routes between Source and Destination----------------//
     fun getRoute(view: View) {
-
-
-        if (source == null && destination.toString().isNotEmpty()) {
-
-            calculateRoute(getLocation, destination, "driving")
-            mMap.addMarker(MarkerOptions().position(getLocation))
-            mMap.addMarker(MarkerOptions().position(destination))
+        if (TextUtils.isEmpty(edt_destination.text.toString())) {
+            Toast.makeText(
+                applicationContext,
+                "Please Add Destination Place First",
+                Toast.LENGTH_SHORT
+            ).show()
 
         } else {
-            calculateRoute(source!!, destination, "driving")
-            mMap.addMarker(MarkerOptions().position(source!!))
-            mMap.addMarker(MarkerOptions().position(destination))
+            if (source == null && destination.toString().isNotEmpty()) {
+
+                if(txt_get_route.text == "Search")
+                {
+                    calculateRoute(getLocation, destination, "driving")
+                    mMap.addMarker(MarkerOptions().position(getLocation))
+                    mMap.addMarker(MarkerOptions().position(destination))
+                    txt_get_route.setText("search")
+                }
+                else {
+                    calculateRoute(getLocation, destination, "walking")
+                    mMap.addMarker(MarkerOptions().position(getLocation))
+                    mMap.addMarker(MarkerOptions().position(destination))
+                    txt_get_route.setText("Search")
+                }
+
+            } else {
+                if (txt_get_route.text == "Search")
+                {
+                calculateRoute(source!!, destination, "driving")
+                mMap.addMarker(MarkerOptions().position(source!!))
+                mMap.addMarker(MarkerOptions().position(destination))
+                    txt_get_route.setText("search")
+                }
+                else
+                {
+                    calculateRoute(source!!, destination, "walking")
+                    mMap.addMarker(MarkerOptions().position(source!!))
+                    mMap.addMarker(MarkerOptions().position(destination))
+                    txt_get_route.setText("Search")
+
+
+                }
+
+                /*return calculateRoute(source!!,destination,"driving")*/
+            }
         }
+
 
     }
 
@@ -454,6 +496,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     fun clearEverything(view: View) {
         mMap.clear()
+        edt_source.text = null
+        edt_destination.text = null
 
 
     }
@@ -473,8 +517,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         destinationLocation()
     }
-
-
 
 
 }

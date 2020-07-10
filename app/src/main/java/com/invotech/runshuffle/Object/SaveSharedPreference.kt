@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION")
 
 package com.invotech.runshuffle.Object
 
@@ -17,12 +18,18 @@ object SaveSharedPreference {
      */
     fun setLoggedIn(
         context: Context?,
-        loggedIn: Boolean
+        loggedIn: Boolean,
+        username: String,
+        password: String
+
+
     ) {
         val editor = getPreferences(
             context
         ).edit()
         editor.putBoolean("logged_in_status", loggedIn)
+
+
         /*editor.putString("User Name",Username)
         editor.putString("Password",Password)*/
         editor.apply()
@@ -36,6 +43,10 @@ object SaveSharedPreference {
     fun getLoggedStatus(context: Context?): Boolean {
         return getPreferences(
             context
-        ).getBoolean("logged_in_status", false)
+        )
+            .getBoolean("logged_in_status", false)
+
+
+
     }
 }

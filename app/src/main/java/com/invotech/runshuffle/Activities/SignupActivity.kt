@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -60,9 +61,25 @@ class SignupActivity : AppCompatActivity() {
                 }
 
                 override fun onResponse(call: Call<RegisterUser>, response: Response<RegisterUser>) {
-                    startActivity(Intent(this@SignupActivity,LoginActivity::class.java))
-                    Toast.makeText(applicationContext,"Succesfully Registered",Toast.LENGTH_LONG).show()
+                    if(response.code() == 200 || TextUtils.isEmpty(edt_name.text.toString()) || TextUtils.isEmpty(edt_email.text.toString()) || TextUtils.isEmpty(edt_password.text.toString()) || TextUtils.isEmpty(edt_c_password.text.toString()) || !chk_conscent.isChecked)
+                    {
 
+                            edt_name.setError("Please Enter Your Name")
+                            edt_email.setError("Please Enter Your Email")
+                            edt_password.setError("Please Enter Your Password")
+                            edt_c_password.setError("Please Re-enter your Password")
+                            Toast.makeText(applicationContext,"Please Confirm the CheckBox",Toast.LENGTH_SHORT).show()
+
+                    }
+                    else
+                    {
+                        edt_name.setError(null)
+                        edt_email.setError(null)
+                        edt_password.setError(null)
+                        edt_c_password.setError(null)
+                    startActivity(Intent(this@SignupActivity,MainActivity::class.java))
+                    Toast.makeText(applicationContext,"Succesfully Registered",Toast.LENGTH_LONG).show()
+                    }
                 }
 
             })
