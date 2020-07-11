@@ -77,6 +77,7 @@ class SignupActivity : AppCompatActivity() {
                         edt_email.setError(null)
                         edt_password.setError(null)
                         edt_c_password.setError(null)
+
                     startActivity(Intent(this@SignupActivity,MainActivity::class.java))
                     Toast.makeText(applicationContext,"Succesfully Registered",Toast.LENGTH_LONG).show()
                     }

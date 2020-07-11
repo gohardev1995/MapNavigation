@@ -19,8 +19,8 @@ object SaveSharedPreference {
     fun setLoggedIn(
         context: Context?,
         loggedIn: Boolean,
-        username: String,
-        password: String
+        Username: String,
+        Password: String
 
 
     ) {
@@ -30,8 +30,8 @@ object SaveSharedPreference {
         editor.putBoolean("logged_in_status", loggedIn)
 
 
-        /*editor.putString("User Name",Username)
-        editor.putString("Password",Password)*/
+        editor.putString("UserName",Username)
+        editor.putString("Password",Password)
         editor.apply()
     }
 

@@ -3,7 +3,6 @@ package com.invotech.runshuffle.Activities
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -25,15 +24,13 @@ import retrofit2.Response
 class LoginActivity : AppCompatActivity() {
 
 
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var sharedEditor: SharedPreferences.Editor
-    private var PREFS_NAME = "PrefsFile"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        /*sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         sharedEditor.putString("userName",edt_email.text.toString())
-        sharedEditor.putString("password",edt_password.text.toString())
+        sharedEditor.putString("password",edt_password.text.toString())*/
 
 
 
@@ -46,14 +43,14 @@ class LoginActivity : AppCompatActivity() {
 
         //----------------------Adding Shared Preference to save Credentials----------------------//
 
-       /* sharedPreferences = getSharedPreferences(fileName, MODE_PRIVATE)
+        val loginPreferences = getSharedPreferences("prefsName", MODE_PRIVATE)
         val loginPrefsEditor = loginPreferences.edit()
         val saveLogin = loginPreferences.getBoolean("saveLogin", false);
         if (saveLogin == true) {
             edt_email.setText(loginPreferences.getString("username", ""))
             edt_password.setText(loginPreferences.getString("password", ""))
             chk_remember.setChecked(true)
-        }*/
+        }
         //--------------------</Adding Shared Preference to save Credentials/>--------------------//
         //----------------------Adding OnClick Listerns to Buttons--------------------------------//
         txt_create_account.setOnClickListener(View.OnClickListener {
@@ -82,12 +79,7 @@ class LoginActivity : AppCompatActivity() {
 
                     if (response.code() == 200 && chk_remember.isChecked) {
 
-                        val isChecked = chk_remember.isChecked
-                        sharedEditor = sharedPreferences.edit()
-                        sharedEditor.putString("pref_name",edt_email.text.toString())
-                        sharedEditor.putString("pref_pass",edt_password.text.toString())
-                        sharedEditor.putBoolean("pref_check",isChecked)
-                        sharedEditor.apply()
+
 
                         val intent = Intent(applicationContext, MainActivity::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK)

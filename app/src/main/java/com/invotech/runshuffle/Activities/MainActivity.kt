@@ -12,8 +12,12 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.webkit.WebView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -33,7 +37,6 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.gson.Gson
 import com.invotech.runshuffle.Object.SaveSharedPreference
 import com.invotech.runshuffle.R
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -45,9 +48,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //----------------------------------------Assigning Variables---------------------------------//
 
+    private var customDialogDest: View? = null
+    private lateinit var DestDialog: AlertDialog
+    private var customDialogSource: View? = null
+    private lateinit var optionDialog: AlertDialog
     private var poly = ArrayList<LatLng>()
     private val PERMISSION_CODE = 99
-
+    private var onIndex: Int = 0
     private lateinit var locateUser: LatLng
     private lateinit var sourceLatLng: LatLng
     private lateinit var destinationLatLng: String
@@ -61,7 +68,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var source: LatLng? = null
     private var REQUEST_CODE = 101
     private var PREFS_NAME = "PrefsFile"
-
+    private lateinit var arr: ArrayList<String>
     private lateinit var autocompleteFragment: AutocompleteSupportFragment
     var placeFields = Arrays.asList(
         Place.Field.ID,
@@ -75,7 +82,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        arr = ArrayList<String>()
+        arr.add("walking")
+        arr.add("driving")
         /*arrLatlng.add(source)*/
         /*getCurrentLocation()*/
 
@@ -86,15 +95,28 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        val edtSource = findViewById<TextView>(R.id.edt_source)
+        edtSource.setOnClickListener {
+            if (onIndex == 0) {
 
+                    getsourceLocation()
+                onIndex = 1
+
+            } else {
+                
+                getsourceLocation()
+                onIndex = 0
+            }
+
+
+        }
 
 
 
         txt_logout.setOnClickListener(View.OnClickListener {
             SaveSharedPreference.setLoggedIn(
                 getApplicationContext(),
-                false,
-                "",""
+                false, "", ""
 
 
             )
@@ -108,12 +130,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-         getCurrentLocation()
-
-
+        getCurrentLocation()
 
         mMap.setOnMapClickListener { dest ->
 
@@ -174,6 +193,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 PERMISSION_CODE
             )
         }
+
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         if (ActivityCompat.checkSelfPermission(
@@ -235,15 +255,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //--------------------------------</Function to get Current Location/>------------------------//
     //----------------------------------- Function to Get Source----------------------------------//
+
     private fun getsourceLocation() {
-
-        val optionDialog = AlertDialog.Builder(this@MainActivity).create()
-
-        val customDialog = layoutInflater.inflate(R.layout.custom_location, null)
+        customDialogSource = layoutInflater.inflate(R.layout.custom_location, null)
+        optionDialog = AlertDialog.Builder(this@MainActivity).create()
         autocompleteFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_place) as AutocompleteSupportFragment
         autocompleteFragment.setPlaceFields(placeFields)
-        /*autocompleteFragment.setText("Name")*/
+
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(p0: Place) {
                 myplace = p0
@@ -254,7 +273,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 source = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
                 edt_source.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude)
                 mMap.addMarker(MarkerOptions().position(source!!).title("Source"))
-                /* edt_source_location.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude.toString())*/
+                /*edt_source_location.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude.toString())*/
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(source, 15f))
                 optionDialog.dismiss()
 
@@ -266,8 +285,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
         })
-        optionDialog.setView(customDialog)
+        optionDialog.setView(customDialogSource)
         optionDialog.show()
+
 
     }
 
@@ -275,7 +295,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     fun getSourceLocation(view: View) {
         mMap.clear()
 
-        /*getCurrentLocation()*/
+        getCurrentLocation()
 
 
         /*getsourceLocation()*/
@@ -289,11 +309,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
+    @SuppressLint("InflateParams")
     private fun destinationLocation() {
 
-        val DestDialog: AlertDialog = AlertDialog.Builder(this@MainActivity).create()
+        DestDialog = AlertDialog.Builder(this@MainActivity).create()
 
-        val customDialog = layoutInflater.inflate(R.layout.custom_destination, null)
+        customDialogDest = layoutInflater.inflate(R.layout.custom_destination,null)
         val autocompleteFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_place1) as AutocompleteSupportFragment
         autocompleteFragment.setPlaceFields(placeFields)
@@ -320,7 +341,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
         })
-        DestDialog.setView(customDialog)
+        DestDialog.setView(customDialogDest)
         DestDialog.show()
 
     }
@@ -353,37 +374,45 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         } else {
             if (source == null && destination.toString().isNotEmpty()) {
 
-                if(txt_get_route.text == "Search")
-                {
-                    calculateRoute(getLocation, destination, "driving")
+                if (onIndex == 0) {
+                    /*calculateRoute(getLocation, destination, arr[0])*/
                     mMap.addMarker(MarkerOptions().position(getLocation))
                     mMap.addMarker(MarkerOptions().position(destination))
-                    txt_get_route.setText("search")
-                }
-                else {
-                    calculateRoute(getLocation, destination, "walking")
+                    onIndex = 1
+                    /*txt_get_route.setText("search")*/
+                } else {
+
+                    /*calculateRoute(getLocation, destination, arr[1])*/
                     mMap.addMarker(MarkerOptions().position(getLocation))
                     mMap.addMarker(MarkerOptions().position(destination))
-                    txt_get_route.setText("Search")
+                    onIndex = 0
+
                 }
+
+                calculateRoute(getLocation, destination, arr[onIndex])
+                mMap.addMarker(MarkerOptions().position(getLocation))
+                mMap.addMarker(MarkerOptions().position(destination))
+
 
             } else {
-                if (txt_get_route.text == "Search")
-                {
-                calculateRoute(source!!, destination, "driving")
-                mMap.addMarker(MarkerOptions().position(source!!))
-                mMap.addMarker(MarkerOptions().position(destination))
-                    txt_get_route.setText("search")
-                }
-                else
-                {
-                    calculateRoute(source!!, destination, "walking")
+                if (onIndex == 0) {
+                    /*calculateRoute(source!!, destination, "driving")*/
                     mMap.addMarker(MarkerOptions().position(source!!))
                     mMap.addMarker(MarkerOptions().position(destination))
-                    txt_get_route.setText("Search")
-
+                    onIndex = 1
+                    /* txt_get_route.setText("search")*/
+                } else {
+                    /*calculateRoute(source!!, destination, "walking")*/
+                    mMap.addMarker(MarkerOptions().position(source!!))
+                    mMap.addMarker(MarkerOptions().position(destination))
+                    /*txt_get_route.setText("Search")*/
+                    onIndex = 0
 
                 }
+                calculateRoute(source!!, destination, arr[onIndex])
+                mMap.addMarker(MarkerOptions().position(source!!))
+                mMap.addMarker(MarkerOptions().position(destination))
+
 
                 /*return calculateRoute(source!!,destination,"driving")*/
             }
@@ -509,7 +538,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun getSourceInflate(view: View) {
-        getsourceLocation()
+
 
     }
 
