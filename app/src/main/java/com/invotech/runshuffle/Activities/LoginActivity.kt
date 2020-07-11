@@ -90,9 +90,7 @@ class LoginActivity : AppCompatActivity() {
 
                         SaveSharedPreference.setLoggedIn(
                             applicationContext,
-                            true,
-                            edt_email.text.toString(),
-                            edt_password.text.toString()
+                            true
                         )
                     } else
                         Toast.makeText(

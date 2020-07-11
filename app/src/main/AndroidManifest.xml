@@ -18,6 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Activities.MapsSourceInflate"></activity>
         <activity android:name=".Activities.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,7 +40,7 @@
 
         <activity
             android:name=".Activities.MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -56,14 +57,10 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
-        <activity android:name=".Activities.ForgetPasswordActivity"></activity>
-        <activity android:name=".Activities.SignupActivity"></activity>
-        <activity android:name=".Activities.LoginActivity">
-
-        </activity>
-        <activity android:name=".Activities.MainActivity">
-
-        </activity>
+        <activity android:name=".Activities.ForgetPasswordActivity" />
+        <activity android:name=".Activities.SignupActivity" />
+        <activity android:name=".Activities.LoginActivity"></activity>
+        <activity android:name=".Activities.MainActivity"></activity>
     </application>
 
 </manifest>

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/frame_layout"
     android:onClick="getCloseKeyboard"
     android:layout_height="match_parent"
     android:background="@color/backgroundColor"
@@ -10,174 +11,177 @@
 
     tools:context=".Activities.MainActivity"
     tools:ignore="ExtraText">
-
     <LinearLayout
-        android:layout_marginTop="10dp"
-
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="3">
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_marginTop="10dp"
 
-        <TextView
-            android:gravity="center"
-            android:id="@+id/txt_logout"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Logout"
-            android:textColor="@color/textColor"
-            android:textSize="15sp" />
-
-        <TextView
-
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Runshuffle"
-            android:textColor="@color/textColor"
-            android:textSize="25sp" />
+            android:orientation="horizontal"
+            android:weightSum="3">
 
-        <TextView
-            android:id="@+id/txt_get_route"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@null"
-            android:gravity="center"
-            android:onClick="getRoute"
-            android:text="Search"
-            android:textColor="@color/textColor"
-            android:textSize="15sp" />
+            <TextView
+                android:gravity="center"
+                android:id="@+id/txt_logout"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Logout"
+                android:textColor="@color/textColor"
+                android:textSize="15sp" />
 
-    </LinearLayout>
-<!--
-   <LinearLayout
-       android:weightSum="2"
-       android:orientation="horizontal"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content">
-       <RadioGroup
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content">
-           <RadioButton
-               android:layout_weight="1"
-               android:id="@+id/rd_walking"
-               android:backgroundTint="@color/textColor"
-               android:textColor="@color/textColor"
-               android:text="Walking Mode"
-               android:layout_marginTop="10dp"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"/>
-           <RadioButton
-               android:id="@+id/rd_driving"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_weight="1"
-               android:backgroundTint="@color/textColor"
-               android:text="Driving Mode"
-               android:textColor="@color/textColor" />
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Runshuffle"
+                android:textColor="@color/textColor"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/txt_get_route"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:gravity="center"
+                android:onClick="getRoute"
+                android:text="Search"
+                android:textColor="@color/textColor"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+        <!--
+           <LinearLayout
+               android:weightSum="2"
+               android:orientation="horizontal"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content">
+               <RadioGroup
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content">
+                   <RadioButton
+                       android:layout_weight="1"
+                       android:id="@+id/rd_walking"
+                       android:backgroundTint="@color/textColor"
+                       android:textColor="@color/textColor"
+                       android:text="Walking Mode"
+                       android:layout_marginTop="10dp"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"/>
+                   <RadioButton
+                       android:id="@+id/rd_driving"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_weight="1"
+                       android:backgroundTint="@color/textColor"
+                       android:text="Driving Mode"
+                       android:textColor="@color/textColor" />
 
 
-       </RadioGroup>
+               </RadioGroup>
 
 
 
-   </LinearLayout>
--->
-    <LinearLayout
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        android:weightSum="3">
-
-        <ImageView
-            android:layout_gravity="center"
-            android:background="@drawable/search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <!--<EditText
-            android:onClick="getMapsActivity"
-            android:id="@+id/edt_location1"
+           </LinearLayout>
+        -->
+        <LinearLayout
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:background="@drawable/custom_edittext"
-            android:hint="Your Location"
-            android:padding="10dp"
-            android:textColor="#000000"
-            android:textColorHint="#000000" />-->
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
 
-        <!--<androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/autocompleteEditText"
-            android:singleLine="true"
+            <ImageView
+                android:layout_gravity="center"
+                android:background="@drawable/search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <!--<EditText
+                android:onClick="getMapsActivity"
+                android:id="@+id/edt_location1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:background="@drawable/custom_edittext"
+                android:hint="Your Location"
+                android:padding="10dp"
+                android:textColor="#000000"
+                android:textColorHint="#000000" />-->
 
-            android:layout_width="wrap_content"
-            android:layout_weight="3"
-            android:layout_height="wrap_content"/>-->
-       <TextView
-           android:text="My Location"
-           android:padding="10dp"
-           android:background="@drawable/custom_edittext"
-           android:id="@+id/edt_source"
-           android:onClick="getSourceInflate"
-           android:layout_weight="3"
-           android:layout_width="match_parent"
-           android:layout_height="40dp"/>
-        <!--<EditText
-            android:padding="15dp"
-            android:background="@drawable/custom_edittext"
-            android:id="@+id/edt_source_location"
+            <!--<androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/autocompleteEditText"
+                android:singleLine="true"
+
+                android:layout_width="wrap_content"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"/>-->
+            <TextView
+                android:text="My Location"
+                android:padding="10dp"
+                android:background="@drawable/custom_edittext"
+                android:id="@+id/edt_source"
+                android:onClick="getSourceInflate"
+                android:layout_weight="3"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"/>
+            <!--<EditText
+                android:padding="15dp"
+                android:background="@drawable/custom_edittext"
+                android:id="@+id/edt_source_location"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="3" />-->
+
+            <Button
+                android:onClick="getSourceLocation"
+                android:id="@+id/btn_search_location"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:text="Clear"
+                android:textColor="@color/textColor" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="3" />-->
-
-        <Button
-            android:onClick="getSourceLocation"
-            android:id="@+id/btn_search_location"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:text="Clear"
-            android:textColor="@color/textColor" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        android:weightSum="3">
-        <ImageView
-            android:layout_gravity="center"
-            android:background="@drawable/search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:padding="10dp"
-            android:onClick="getDestinationInflator"
-            android:background="@drawable/custom_edittext"
-            android:layout_weight="3"
-            android:id="@+id/edt_destination"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"/>
-        <!--<fragment
-            android:id="@+id/fragment_place1"
-            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_weight="3" />
-        --><!--<EditText
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+            <ImageView
+                android:layout_gravity="center"
+                android:background="@drawable/search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:padding="10dp"
+                android:onClick="getDestinationInflator"
+                android:background="@drawable/custom_edittext"
+                android:layout_weight="3"
+                android:id="@+id/edt_destination"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"/>
+            <!--<fragment
+                android:id="@+id/fragment_place1"
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_weight="3" />
+            --><!--<EditText
             android:id="@+id/edt_destination_location"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -186,40 +190,42 @@
             android:padding="10dp"
             android:textColor="#000000"
             android:textColorHint="#000000" />-->
-        <Button
-            android:onClick="getDestinationLocation"
-            android:id="@+id/btn_destination_location"
+            <Button
+                android:onClick="getDestinationLocation"
+                android:id="@+id/btn_destination_location"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:text="Clear"
+                android:textColor="@color/textColor" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/txt_clear"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:text="Clear"
-            android:textColor="@color/textColor" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="clearEverything"
+            android:text="Clear All"
+            android:textColor="@color/textColor"
+            android:textSize="15sp" />
+
+
+        <fragment
+
+
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".Activities.MapsActivity"/>
 
 
     </LinearLayout>
 
-    <TextView
-        android:layout_marginLeft="15dp"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/txt_clear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:onClick="clearEverything"
-        android:text="Clear All"
-        android:textColor="@color/textColor"
-        android:textSize="15sp" />
-
-
-    <fragment
-
-
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".Activities.MapsActivity"/>
-
-
-</LinearLayout>
+</FrameLayout>

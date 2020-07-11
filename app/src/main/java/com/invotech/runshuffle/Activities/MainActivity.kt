@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -12,11 +13,8 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.webkit.WebView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -67,7 +65,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var destination: LatLng
     private var source: LatLng? = null
     private var REQUEST_CODE = 101
-    private var PREFS_NAME = "PrefsFile"
     private lateinit var arr: ArrayList<String>
     private lateinit var autocompleteFragment: AutocompleteSupportFragment
     var placeFields = Arrays.asList(
@@ -76,7 +73,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         Place.Field.ADDRESS,
         Place.Field.LAT_LNG
     )
-
+   
 
     //-----------------------------------</Assigning Variables/>----------------------------------//
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,6 +82,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         arr = ArrayList<String>()
         arr.add("walking")
         arr.add("driving")
+
         /*arrLatlng.add(source)*/
         /*getCurrentLocation()*/
 
@@ -98,25 +96,35 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val edtSource = findViewById<TextView>(R.id.edt_source)
         edtSource.setOnClickListener {
             if (onIndex == 0) {
-
+                    customDialogSource = null
                     getsourceLocation()
                 onIndex = 1
 
             } else {
-                
-                getsourceLocation()
+                sourceLocationAgain()
                 onIndex = 0
             }
 
 
         }
+        edt_destination.setOnClickListener{
+            if (onIndex == 0) {
+                customDialogDest = null
+                destinationLocation()
+                onIndex = 1
+
+            } else {
+                destinationLocationAgain()
+                onIndex = 0
+            }
+        }
 
 
 
-        txt_logout.setOnClickListener(View.OnClickListener {
+        txt_logout.setOnClickListener({
             SaveSharedPreference.setLoggedIn(
                 getApplicationContext(),
-                false, "", ""
+                false
 
 
             )
@@ -127,6 +135,42 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         //----------------------------Google Place API KEY----------------------------------------//
         Places.initialize(this, getString(R.string.places_api))
         //---------------------------</Google Place API KEY/>-------------------------------------//
+    }
+
+    private fun destinationLocationAgain() {
+        val DestDialog = AlertDialog.Builder(this@MainActivity).create()
+
+        val customDialogDest = layoutInflater.inflate(R.layout.custom_location,null)
+        val autocompleteFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment_place) as AutocompleteSupportFragment
+        autocompleteFragment.setPlaceFields(placeFields)
+
+        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(p0: Place) {
+                myplace2 = p0
+                val queriedLocation = myplace2.latLng
+
+                destinationLatLng = p0.latLng.toString()
+                edt_destination.setText(queriedLocation?.latitude.toString() + " , " + queriedLocation?.longitude)
+
+                destination = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
+
+                mMap.addMarker(MarkerOptions().position(destination).title("Marker in Destination"))
+                DestDialog.dismiss()
+                /*edt_destination_location.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude.toString())*/
+
+
+            }
+
+            override fun onError(p0: Status) {
+
+            }
+
+        })
+        DestDialog.setView(customDialogDest)
+        DestDialog.show()
+
+
     }
 
 
@@ -257,14 +301,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     //----------------------------------- Function to Get Source----------------------------------//
 
     private fun getsourceLocation() {
+
+        optionDialog = AlertDialog.Builder(this).create()
         customDialogSource = layoutInflater.inflate(R.layout.custom_location, null)
-        optionDialog = AlertDialog.Builder(this@MainActivity).create()
+
         autocompleteFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_place) as AutocompleteSupportFragment
         autocompleteFragment.setPlaceFields(placeFields)
 
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(p0: Place) {
+
                 myplace = p0
 
 
@@ -278,6 +325,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 optionDialog.dismiss()
 
 
+
             }
 
             override fun onError(p0: Status) {
@@ -286,8 +334,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         })
         optionDialog.setView(customDialogSource)
-        optionDialog.show()
 
+        optionDialog.show()
 
     }
 
@@ -545,6 +593,44 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     fun getDestinationInflator(view: View) {
 
         destinationLocation()
+    }
+    fun sourceLocationAgain()
+    {
+        val optionDialog = AlertDialog.Builder(this).create()
+        val customDialogSource = layoutInflater.inflate(R.layout.custom_destination, null)
+
+        val autocompleteFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment_place1) as AutocompleteSupportFragment
+        autocompleteFragment.setPlaceFields(placeFields)
+
+        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(p0: Place) {
+
+                myplace = p0
+
+
+                val queriedLocation = myplace.latLng
+                mMap.clear()
+                source = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
+                edt_source.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude)
+                mMap.addMarker(MarkerOptions().position(source!!).title("Source"))
+                /*edt_source_location.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude.toString())*/
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(source, 15f))
+                optionDialog.dismiss()
+
+
+
+            }
+
+            override fun onError(p0: Status) {
+
+            }
+
+        })
+        optionDialog.setView(customDialogSource)
+
+        optionDialog.show()
+
     }
 
 
