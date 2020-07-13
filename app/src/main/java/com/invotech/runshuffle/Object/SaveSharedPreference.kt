@@ -4,6 +4,7 @@ package com.invotech.runshuffle.Object
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+
 object SaveSharedPreference {
     fun getPreferences(context: Context?): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)

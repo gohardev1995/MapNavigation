@@ -14,12 +14,16 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.view.View.*
+import android.view.ViewStub
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -48,6 +52,8 @@ import kotlin.collections.ArrayList
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //----------------------------------------Assigning Variables---------------------------------//
+    private var Sourceview: View? = null
+    private var DestinationView: View? = null
     private lateinit var sharedPreferences : SharedPreferences
     private lateinit var SharedEditor :SharedPreferences.Editor
     private var myPreference = "myPrefs"
@@ -103,29 +109,51 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
         val edtSource = findViewById<TextView>(R.id.edt_source)
         edtSource.setOnClickListener {
+            if (Sourceview == null)
+            {
 
-             if (onIndex == 0) {
+                Sourceview = SourceStub.inflate()
+                getsourceLocation()
+
+            }
+            else
+            {
+                val lo = findViewById<LinearLayout>(R.id.SourceSubTree)
+
 
                 getsourceLocation()
+                lo.visibility = View.VISIBLE
+            }
+            /*stub.setVisibility(GONE)*/
+             /*if (onIndex == 0) {
+
+                 stub.inflate();
                 onIndex = 1
 
             } else {
                 getsourceLocation()
                 onIndex = 0
             }
-
+*/
 
         }
         edt_destination.setOnClickListener {
-            if (onIndex == 0) {
-                customDialogDest = null
+            if (DestinationView == null)
+            {
+
+                DestinationView = DestinationStub.inflate()
                 destinationLocation()
-                onIndex = 1
 
-            } else {
-
-                onIndex = 0
             }
+            else
+            {
+                val lo = findViewById<LinearLayout>(R.id.DestinationSubTree)
+
+
+                destinationLocation()
+                lo.visibility = View.VISIBLE
+            }
+
         }
 
 
@@ -286,14 +314,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     @SuppressLint("ResourceType")
     private fun getsourceLocation() {
 
-        optionDialog = AlertDialog.Builder(this@MainActivity).create()
+       /* optionDialog = AlertDialog.Builder(this@MainActivity).create()*/
 
 
 
-        if (onIndex ==0)
-        {
-            val customDialogSource = layoutInflater.inflate(R.layout.custom_location, null)
 
+            /*val customDialogSource = layoutInflater.inflate(R.layout.custom_location, null)
+*/
             autocompleteFragment =
                 supportFragmentManager.findFragmentById(R.id.fragment_place) as AutocompleteSupportFragment
             autocompleteFragment.setPlaceFields(placeFields)
@@ -310,9 +337,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     mMap.addMarker(MarkerOptions().position(source!!).title("Source"))
                     /*edt_source_location.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude.toString())*/
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(source, 15f))
-                    optionDialog.dismiss()
-
-
+                    Sourceview?.visibility = GONE
+                    sourceLinear.visibility = VISIBLE
 
                 }
 
@@ -320,12 +346,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 }
 
+
             })
-            optionDialog.setView(customDialogSource)
 
-            optionDialog.show()
+       /* stub.visibility = View.GONE*/
+            /*optionDialog.setView(customDialogSource)
 
-            onIndex =1
+            optionDialog.show()*/
+
+           /* onIndex =1
         }
         else
         {
@@ -346,7 +375,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     source = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
                     edt_source.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude)
                     mMap.addMarker(MarkerOptions().position(source!!).title("Source"))
-                    /*edt_source_location.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude.toString())*/
+                    *//*edt_source_location.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude.toString())*//*
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(source, 15f))
                     optionDialog.dismiss()
 
@@ -365,7 +394,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             optionDialog.show()
             onIndex =0
 
-        }
+        }*/
     }
 
 
@@ -386,12 +415,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
-    @SuppressLint("InflateParams")
     private fun destinationLocation() {
 
-        DestDialog = AlertDialog.Builder(this@MainActivity).create()
-
-        customDialogDest = layoutInflater.inflate(R.layout.custom_destination, null)
         val autocompleteFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_place1) as AutocompleteSupportFragment
         autocompleteFragment.setPlaceFields(placeFields)
@@ -407,8 +432,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 destination = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
 
                 mMap.addMarker(MarkerOptions().position(destination).title("Marker in Destination"))
-                DestDialog.dismiss()
                 /*edt_destination_location.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude.toString())*/
+                DestinationView?.visibility = GONE
+                DestinationLinear.visibility = VISIBLE
 
 
             }
@@ -418,8 +444,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
         })
-        DestDialog.setView(customDialogDest)
-        DestDialog.show()
+
 
     }
 

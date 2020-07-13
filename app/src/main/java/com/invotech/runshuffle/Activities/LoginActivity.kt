@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -27,17 +28,16 @@ import retrofit2.Response
 @Suppress("DEPRECATION")
 class LoginActivity : AppCompatActivity() {
 
-
+    private lateinit var sharedPreferences : SharedPreferences
+    private lateinit var SharedEditor : SharedPreferences.Editor
+    private var myPreference = "myPrefs"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        /*sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        sharedEditor.putString("userName",edt_email.text.toString())
-        sharedEditor.putString("password",edt_password.text.toString())*/
-
-
+        sharedPreferences = getSharedPreferences(myPreference, Context.MODE_PRIVATE)
+        getPreferencesData()
 
         if (SaveSharedPreference.getLoggedStatus(applicationContext)) {
             val intent = Intent(applicationContext, MainActivity::class.java)
@@ -86,6 +86,16 @@ class LoginActivity : AppCompatActivity() {
                     Log.d("Gohar", response.code().toString())
                     Log.e("Gohar",response.code().toString())
                     if (response.code() == 200 && chk_remember.isChecked) {
+                        if(chk_remember.isChecked)
+                        {
+                            val boolisChecked = chk_remember.isChecked
+                            SharedEditor = sharedPreferences.edit()
+                            SharedEditor.putString("pref_email",edt_email.text.toString())
+                            SharedEditor.putString("pref_pass",edt_password.text.toString())
+                            SharedEditor.putBoolean("pref_check",boolisChecked)
+                            SharedEditor.apply()
+
+                        }
 
 
 
@@ -126,6 +136,21 @@ class LoginActivity : AppCompatActivity() {
 
             /*doSomethingElse()*/
         })
+
+    }
+
+    private fun getPreferencesData() {
+        if (sharedPreferences.contains("pref_email"))
+        {
+            val useremail = sharedPreferences.getString("pref_email","not found")
+            edt_email.setText(useremail)
+        }
+        if(sharedPreferences.contains("pref_pass"))
+        {
+            val userpass = sharedPreferences.getString("pref_pass","not found")
+            edt_password.setText(userpass)
+
+        }
 
     }
 

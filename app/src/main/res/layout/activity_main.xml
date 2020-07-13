@@ -92,6 +92,7 @@
            </LinearLayout>
         -->
         <LinearLayout
+            android:id="@+id/sourceLinear"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:layout_width="match_parent"
@@ -124,6 +125,12 @@
                 android:layout_width="wrap_content"
                 android:layout_weight="3"
                 android:layout_height="wrap_content"/>-->
+            <ViewStub
+                android:id="@+id/SourceStub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inflatedId="@+id/SourceSubTree"
+                android:layout="@layout/custom_location" />
             <TextView
                 android:text="My Location"
                 android:padding="10dp"
@@ -155,6 +162,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/DestinationLinear"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:layout_width="match_parent"
@@ -162,6 +170,12 @@
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:weightSum="3">
+            <ViewStub
+                android:id="@+id/DestinationStub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inflatedId="@+id/DestinationSubTree"
+                android:layout="@layout/custom_destination" />
             <ImageView
                 android:layout_gravity="center"
                 android:background="@drawable/search"
