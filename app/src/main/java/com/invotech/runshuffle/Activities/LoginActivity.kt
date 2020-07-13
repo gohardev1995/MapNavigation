@@ -1,5 +1,6 @@
 package com.invotech.runshuffle.Activities
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -15,6 +16,9 @@ import com.invotech.runshuffle.Object.APIClient
 import com.invotech.runshuffle.Object.SaveSharedPreference
 import com.invotech.runshuffle.R
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.edt_email
+import kotlinx.android.synthetic.main.activity_login.edt_password
+import kotlinx.android.synthetic.main.activity_login.txt_forgot_password
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,6 +26,7 @@ import retrofit2.Response
 
 @Suppress("DEPRECATION")
 class LoginActivity : AppCompatActivity() {
+
 
 
 
@@ -43,14 +48,15 @@ class LoginActivity : AppCompatActivity() {
 
         //----------------------Adding Shared Preference to save Credentials----------------------//
 
-        val loginPreferences = getSharedPreferences("prefsName", MODE_PRIVATE)
+        /*val loginPreferences = getSharedPreferences("prefsName", MODE_PRIVATE)
         val loginPrefsEditor = loginPreferences.edit()
         val saveLogin = loginPreferences.getBoolean("saveLogin", false);
         if (saveLogin == true) {
             edt_email.setText(loginPreferences.getString("username", ""))
             edt_password.setText(loginPreferences.getString("password", ""))
             chk_remember.setChecked(true)
-        }
+
+        }*/
         //--------------------</Adding Shared Preference to save Credentials/>--------------------//
         //----------------------Adding OnClick Listerns to Buttons--------------------------------//
         txt_create_account.setOnClickListener(View.OnClickListener {
@@ -66,6 +72,7 @@ class LoginActivity : AppCompatActivity() {
         btn_signin.setOnClickListener(View.OnClickListener {
             val LoginAPI = APIClient.client.create(LoginAPI::class.java)
             val callLoginApi = LoginAPI.createUser(
+
                 edt_email.text.toString(),
                 edt_password.text.toString()
             )
@@ -74,14 +81,26 @@ class LoginActivity : AppCompatActivity() {
 
                 }
 
+                @SuppressLint("CommitPrefEdits")
                 override fun onResponse(call: Call<LoginUser>, response: Response<LoginUser>) {
                     Log.d("Gohar", response.code().toString())
-
+                    Log.e("Gohar",response.code().toString())
                     if (response.code() == 200 && chk_remember.isChecked) {
 
 
 
-                        val intent = Intent(applicationContext, MainActivity::class.java)
+
+                        val intent = Intent(applicationContext,MainActivity::class.java)
+                        /*intent.putExtra("email",edt_email.text.toString())
+                        intent.putExtra("password",edt_password.text.toString())
+
+                        val username = intent.getStringExtra("email")
+                        val password = intent.getStringExtra("password")
+
+                        edt_email.setText(username)
+                        edt_password.setText(password)
+                        Log.d("gohar",username)
+                        Log.d("gohar",password)*/
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK)
                         Toast.makeText(applicationContext, "Succesfully Logged In ", Toast.LENGTH_SHORT).show()
 

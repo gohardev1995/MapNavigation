@@ -3,6 +3,7 @@ package com.invotech.runshuffle.Activities
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -21,6 +22,11 @@ import retrofit2.Response
 
 
 class SignupActivity : AppCompatActivity() {
+     private lateinit var sharedPreferences : SharedPreferences
+    private lateinit var SharedEditor :SharedPreferences.Editor
+    private var myPreference = "myPrefs"
+    private var email = "email"
+    private var password = "password"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
@@ -73,13 +79,12 @@ class SignupActivity : AppCompatActivity() {
                     }
                     else
                     {
-                        edt_name.setError(null)
-                        edt_email.setError(null)
-                        edt_password.setError(null)
-                        edt_c_password.setError(null)
 
-                    startActivity(Intent(this@SignupActivity,MainActivity::class.java))
+
+                        val intent = Intent(this@SignupActivity,MainActivity::class.java);
+                        startActivity(intent)
                     Toast.makeText(applicationContext,"Succesfully Registered",Toast.LENGTH_LONG).show()
+
                     }
                 }
 
