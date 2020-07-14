@@ -60,15 +60,27 @@
         android:textColorHint="@color/textColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+    <TextView
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/textColor"
+        android:text="Password and Confirm Password Must be Same"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <LinearLayout
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
 
         <CheckBox
             android:id="@+id/chk_conscent"
             android:backgroundTint="@color/btnColor"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <TextView
             android:textStyle="bold"

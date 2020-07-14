@@ -12,6 +12,7 @@
     tools:context=".Activities.MainActivity"
     tools:ignore="ExtraText">
     <LinearLayout
+
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -127,8 +128,8 @@
                 android:layout_height="wrap_content"/>-->
             <ViewStub
                 android:id="@+id/SourceStub"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:inflatedId="@+id/SourceSubTree"
                 android:layout="@layout/custom_location" />
             <TextView
@@ -172,8 +173,8 @@
             android:weightSum="3">
             <ViewStub
                 android:id="@+id/DestinationStub"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:inflatedId="@+id/DestinationSubTree"
                 android:layout="@layout/custom_destination" />
             <ImageView

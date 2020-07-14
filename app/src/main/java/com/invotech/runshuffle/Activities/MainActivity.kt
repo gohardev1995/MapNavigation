@@ -18,6 +18,7 @@ import android.view.View.*
 import android.view.ViewStub
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -54,14 +55,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     //----------------------------------------Assigning Variables---------------------------------//
     private var Sourceview: View? = null
     private var DestinationView: View? = null
-    private lateinit var sharedPreferences : SharedPreferences
-    private lateinit var SharedEditor :SharedPreferences.Editor
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var SharedEditor: SharedPreferences.Editor
     private var myPreference = "myPrefs"
     private var email = "email"
     private var password = "password"
     private var customDialogDest: View? = null
     private lateinit var DestDialog: AlertDialog
-   /* private var customDialogSource: View? = null*/
+
+    /* private var customDialogSource: View? = null*/
     private lateinit var optionDialog: AlertDialog
     private var poly = ArrayList<LatLng>()
     private val PERMISSION_CODE = 101
@@ -109,15 +111,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
         val edtSource = findViewById<TextView>(R.id.edt_source)
         edtSource.setOnClickListener {
-            if (Sourceview == null)
-            {
+            if (Sourceview == null) {
 
                 Sourceview = SourceStub.inflate()
                 getsourceLocation()
 
-            }
-            else
-            {
+
+
+            } else {
                 val lo = findViewById<LinearLayout>(R.id.SourceSubTree)
 
 
@@ -125,28 +126,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 lo.visibility = View.VISIBLE
             }
             /*stub.setVisibility(GONE)*/
-             /*if (onIndex == 0) {
+            /*if (onIndex == 0) {
 
-                 stub.inflate();
-                onIndex = 1
+                stub.inflate();
+               onIndex = 1
 
-            } else {
-                getsourceLocation()
-                onIndex = 0
-            }
+           } else {
+               getsourceLocation()
+               onIndex = 0
+           }
 */
 
         }
         edt_destination.setOnClickListener {
-            if (DestinationView == null)
-            {
+            if (DestinationView == null) {
 
                 DestinationView = DestinationStub.inflate()
                 destinationLocation()
 
-            }
-            else
-            {
+            } else {
                 val lo = findViewById<LinearLayout>(R.id.DestinationSubTree)
 
 
@@ -170,8 +168,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             )
 
 
-            val intent = Intent(this,LoginActivity::class.java)
-                 intent.getStringExtra("email")
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.getStringExtra("email")
             intent.getStringExtra("password")
 
 
@@ -313,69 +311,61 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     @SuppressLint("ResourceType")
     private fun getsourceLocation() {
+        autocompleteFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment_place) as AutocompleteSupportFragment
+        autocompleteFragment.setPlaceFields(placeFields)
 
-       /* optionDialog = AlertDialog.Builder(this@MainActivity).create()*/
+        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(p0: Place) {
 
+                myplace = p0
 
+                val queriedLocation = myplace.latLng
+                mMap.clear()
+                source = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
+                edt_source.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude)
+                mMap.addMarker(MarkerOptions().position(source!!).title("Source"))
+                /*edt_source_location.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude.toString())*/
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(source, 15f))
+                Sourceview?.visibility = GONE
+                sourceLinear.visibility = VISIBLE
 
+            }
 
-            /*val customDialogSource = layoutInflater.inflate(R.layout.custom_location, null)
-*/
-            autocompleteFragment =
-                supportFragmentManager.findFragmentById(R.id.fragment_place) as AutocompleteSupportFragment
-            autocompleteFragment.setPlaceFields(placeFields)
+            override fun onError(p0: Status) {
 
-            autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-                override fun onPlaceSelected(p0: Place) {
-
-                    myplace = p0
-
-                    val queriedLocation = myplace.latLng
-                    mMap.clear()
-                    source = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
-                    edt_source.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude)
-                    mMap.addMarker(MarkerOptions().position(source!!).title("Source"))
-                    /*edt_source_location.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude.toString())*/
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(source, 15f))
-                    Sourceview?.visibility = GONE
-                    sourceLinear.visibility = VISIBLE
-
-                }
-
-                override fun onError(p0: Status) {
-
-                }
+            }
 
 
-            })
+        })
 
-       /* stub.visibility = View.GONE*/
-            /*optionDialog.setView(customDialogSource)
+        /* stub.visibility = View.GONE*/
+        /*optionDialog.setView(customDialogSource)
 
-            optionDialog.show()*/
+        optionDialog.show()*/
 
-           /* onIndex =1
-        }
-        else
-        {
+        /* onIndex =1
+     }
+     else
+     {
 
-            val customDialogSource = layoutInflater.inflate(R.layout.custom_location, null)
-            autocompleteFragment =
-                supportFragmentManager.findFragmentById(R.id.fragment_place) as AutocompleteSupportFragment
-            autocompleteFragment.setPlaceFields(placeFields)
+         val customDialogSource = layoutInflater.inflate(R.layout.custom_location, null)
+         autocompleteFragment =
+             supportFragmentManager.findFragmentById(R.id.fragment_place) as AutocompleteSupportFragment
+         autocompleteFragment.setPlaceFields(placeFields)
 
-            autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-                override fun onPlaceSelected(p0: Place) {
+         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+             override fun onPlaceSelected(p0: Place) {
 
-                    myplace = p0
+                 myplace = p0
 
 
-                    val queriedLocation = myplace.latLng
-                    mMap.clear()
-                    source = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
-                    edt_source.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude)
-                    mMap.addMarker(MarkerOptions().position(source!!).title("Source"))
-                    *//*edt_source_location.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude.toString())*//*
+                 val queriedLocation = myplace.latLng
+                 mMap.clear()
+                 source = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
+                 edt_source.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude)
+                 mMap.addMarker(MarkerOptions().position(source!!).title("Source"))
+                 *//*edt_source_location.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude.toString())*//*
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(source, 15f))
                     optionDialog.dismiss()
 
@@ -498,16 +488,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
             } else {
                 if (onIndex == 0) {
-                    /*calculateRoute(source!!, destination, "driving")*/
+
                     mMap.addMarker(MarkerOptions().position(source!!))
                     mMap.addMarker(MarkerOptions().position(destination))
+
                     onIndex = 1
-                    /* txt_get_route.setText("search")*/
+
                 } else {
-                    /*calculateRoute(source!!, destination, "walking")*/
+
                     mMap.addMarker(MarkerOptions().position(source!!))
                     mMap.addMarker(MarkerOptions().position(destination))
-                    /*txt_get_route.setText("Search")*/
+
                     onIndex = 0
 
                 }
@@ -628,7 +619,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     fun clearEverything(view: View) {
         mMap.clear()
 
-        edt_source.text = null
+
         edt_destination.text = null
 
 

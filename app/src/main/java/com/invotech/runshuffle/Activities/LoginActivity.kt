@@ -85,9 +85,10 @@ class LoginActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<LoginUser>, response: Response<LoginUser>) {
                     Log.d("Gohar", response.code().toString())
                     Log.e("Gohar",response.code().toString())
-                    if (response.code() == 200 && chk_remember.isChecked) {
+                    if (response.code() == 200) {
                         if(chk_remember.isChecked)
                         {
+
                             val boolisChecked = chk_remember.isChecked
                             SharedEditor = sharedPreferences.edit()
                             SharedEditor.putString("pref_email",edt_email.text.toString())
@@ -96,6 +97,8 @@ class LoginActivity : AppCompatActivity() {
                             SharedEditor.apply()
 
                         }
+                        else
+                            sharedPreferences.edit().clear().apply()
 
 
 
@@ -151,6 +154,12 @@ class LoginActivity : AppCompatActivity() {
             edt_password.setText(userpass)
 
         }
+        if(sharedPreferences.contains("pref_check"))
+        {
+            val b = sharedPreferences.getBoolean("pref_check",false)
+            chk_remember.isChecked = b
+        }
+
 
     }
 

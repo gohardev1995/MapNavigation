@@ -67,7 +67,7 @@ class SignupActivity : AppCompatActivity() {
                 }
 
                 override fun onResponse(call: Call<RegisterUser>, response: Response<RegisterUser>) {
-                    if(response.code() == 200 || TextUtils.isEmpty(edt_name.text.toString()) || TextUtils.isEmpty(edt_email.text.toString()) || TextUtils.isEmpty(edt_password.text.toString()) || TextUtils.isEmpty(edt_c_password.text.toString()) || !chk_conscent.isChecked)
+                    if(response.code() == 200 || TextUtils.isEmpty(edt_name.text.toString()) || TextUtils.isEmpty(edt_email.text.toString()) || TextUtils.isEmpty(edt_password.text.toString()) || TextUtils.isEmpty(edt_c_password.text.toString()) || !chk_conscent.isChecked || edt_password.text.toString() == edt_c_password.text.toString())
                     {
 
                             edt_name.setError("Please Enter Your Name")
