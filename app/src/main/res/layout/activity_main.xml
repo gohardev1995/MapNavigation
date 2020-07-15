@@ -127,11 +127,19 @@
                 android:layout_weight="3"
                 android:layout_height="wrap_content"/>-->
             <ViewStub
+
                 android:id="@+id/SourceStub"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inflatedId="@+id/SourceSubTree"
                 android:layout="@layout/custom_location" />
+            <ViewStub
+                android:id="@+id/SourceStub1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inflatedId="@+id/SourceSubTree"
+                android:layout="@layout/custom_location" />
+
             <TextView
                 android:text="My Location"
                 android:padding="10dp"
@@ -141,6 +149,7 @@
                 android:layout_weight="3"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"/>
+
             <!--<EditText
                 android:padding="15dp"
                 android:background="@drawable/custom_edittext"
@@ -190,13 +199,8 @@
                 android:id="@+id/edt_destination"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"/>
-            <!--<fragment
-                android:id="@+id/fragment_place1"
-                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_weight="3" />
-            --><!--<EditText
+
+            <!--<EditText
             android:id="@+id/edt_destination_location"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

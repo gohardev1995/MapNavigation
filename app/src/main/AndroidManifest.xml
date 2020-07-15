@@ -18,9 +18,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.SplashScreen">
-
-        </activity>
+        <activity android:name=".Activities.SourceInflatorActivity"></activity>
+        <activity android:name=".SourceFetchActivity"></activity>
+        <activity android:name=".Activities.SplashScreen" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -54,7 +54,7 @@
         -->
         <activity android:name=".Activities.ForgetPasswordActivity" />
         <activity android:name=".Activities.SignupActivity" />
-        <activity android:name=".Activities.LoginActivity"></activity>
+        <activity android:name=".Activities.LoginActivity" />
         <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
