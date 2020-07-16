@@ -2,38 +2,40 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/frame_layout"
-    android:onClick="getCloseKeyboard"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundColor"
+    android:onClick="getCloseKeyboard"
     android:orientation="vertical"
 
     tools:context=".Activities.MainActivity"
     tools:ignore="ExtraText">
+
     <LinearLayout
 
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_marginTop="10dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
+        <LinearLayout
             android:layout_width="match_parent"
+
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:weightSum="3">
 
             <TextView
-                android:gravity="center"
                 android:id="@+id/txt_logout"
-                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:text="Logout"
                 android:textColor="@color/textColor"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <TextView
 
@@ -92,21 +94,24 @@
 
            </LinearLayout>
         -->
+
+
         <LinearLayout
             android:id="@+id/sourceLinear"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:weightSum="3">
 
             <ImageView
-                android:layout_gravity="center"
-                android:background="@drawable/search"
+                android:id="@+id/image_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/search" />
             <!--<EditText
                 android:onClick="getMapsActivity"
                 android:id="@+id/edt_location1"
@@ -133,24 +138,32 @@
                 android:layout_height="match_parent"
                 android:inflatedId="@+id/SourceSubTree"
                 android:layout="@layout/custom_location" />
+
             <ViewStub
                 android:id="@+id/SourceStub1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inflatedId="@+id/SourceSubTree"
                 android:layout="@layout/custom_location" />
-
+            <!--  <fragment
+                  android:id="@+id/fragment_place"
+                  android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                  android:layout_width="match_parent"
+                  android:layout_height="30dp"
+                  android:layout_weight="3" />-->
             <TextView
-                android:text="My Location"
-                android:padding="10dp"
-                android:background="@drawable/custom_edittext"
                 android:id="@+id/edt_source"
-                android:onClick="getSourceInflate"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
                 android:layout_weight="3"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"/>
+                android:background="@drawable/custom_edittext"
+                android:onClick="getSourceInflate"
+                android:padding="10dp"
+                android:text="My Location" />
+
 
             <!--<EditText
+                android:visibility="gone"
                 android:padding="15dp"
                 android:background="@drawable/custom_edittext"
                 android:id="@+id/edt_source_location"
@@ -159,12 +172,12 @@
                 android:layout_weight="3" />-->
 
             <Button
-                android:onClick="getSourceLocation"
                 android:id="@+id/btn_search_location"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:background="@null"
+                android:onClick="getSourceLocation"
                 android:text="Clear"
                 android:textColor="@color/textColor" />
 
@@ -173,32 +186,37 @@
 
         <LinearLayout
             android:id="@+id/DestinationLinear"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:weightSum="3">
+
             <ViewStub
                 android:id="@+id/DestinationStub"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inflatedId="@+id/DestinationSubTree"
                 android:layout="@layout/custom_destination" />
+
             <ImageView
-                android:layout_gravity="center"
-                android:background="@drawable/search"
+                android:id="@+id/img2"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/search" />
+
+
             <TextView
-                android:padding="10dp"
-                android:onClick="getDestinationInflator"
-                android:background="@drawable/custom_edittext"
-                android:layout_weight="3"
                 android:id="@+id/edt_destination"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"/>
+                android:layout_height="40dp"
+                android:layout_weight="3"
+                android:background="@drawable/custom_edittext"
+                android:onClick="getDestinationInflator"
+                android:padding="10dp" />
 
             <!--<EditText
             android:id="@+id/edt_destination_location"
@@ -210,39 +228,69 @@
             android:textColor="#000000"
             android:textColorHint="#000000" />-->
             <Button
-                android:onClick="getDestinationLocation"
                 android:id="@+id/btn_destination_location"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_weight="1"
                 android:background="@null"
+                android:onClick="getDestinationLocation"
                 android:text="Clear"
                 android:textColor="@color/textColor" />
 
 
         </LinearLayout>
 
-        <TextView
-            android:layout_marginLeft="15dp"
-            android:layout_marginBottom="10dp"
-            android:id="@+id/txt_clear"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:onClick="clearEverything"
-            android:text="Clear All"
-            android:textColor="@color/textColor"
-            android:textSize="15sp" />
+            android:layout_marginTop="7dp"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:weightSum="3">
+
+            <Button
+                android:textColor="#ffffff"
+                android:text="Clear All"
+                android:background="@drawable/custom_btn_2"
+                android:onClick="clearAll"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp" />
+
+            <Button
+                android:layout_marginRight="20dp"
+                android:textColor="#ffffff"
+                android:text="Normal"
+                android:background="@drawable/custom_btn_2"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:textColor="#ffffff"
+                android:text="Round"
+                android:background="@drawable/custom_btn_2"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="1" />
+
+
+        </LinearLayout>
+
+
 
 
         <fragment
 
-
+            android:layout_marginTop="10dp"
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".Activities.MapsActivity"/>
+            tools:context=".Activities.MapsActivity" />
 
 
     </LinearLayout>
