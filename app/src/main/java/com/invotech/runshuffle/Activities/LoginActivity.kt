@@ -1,11 +1,13 @@
 package com.invotech.runshuffle.Activities
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -17,9 +19,6 @@ import com.invotech.runshuffle.Object.APIClient
 import com.invotech.runshuffle.Object.SaveSharedPreference
 import com.invotech.runshuffle.R
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_login.edt_email
-import kotlinx.android.synthetic.main.activity_login.edt_password
-import kotlinx.android.synthetic.main.activity_login.txt_forgot_password
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -114,6 +113,12 @@ class LoginActivity : AppCompatActivity() {
                         edt_password.setText(password)
                         Log.d("gohar",username)
                         Log.d("gohar",password)*/
+                        val progressDialog = ProgressDialog
+                            .show(this@LoginActivity,
+                                "Shifting Towards MainAcitivty",
+                                "");
+                        progressDialog.show()
+
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK)
                         Toast.makeText(applicationContext, "Succesfully Logged In ", Toast.LENGTH_SHORT).show()
 

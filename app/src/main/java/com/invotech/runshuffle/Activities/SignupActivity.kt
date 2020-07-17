@@ -1,6 +1,7 @@
 package com.invotech.runshuffle.Activities
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -21,6 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
+@Suppress("DEPRECATION")
 class SignupActivity : AppCompatActivity() {
      private lateinit var sharedPreferences : SharedPreferences
     private lateinit var SharedEditor :SharedPreferences.Editor
@@ -80,7 +82,11 @@ class SignupActivity : AppCompatActivity() {
                     else
                     {
 
-
+                        val progressDialog = ProgressDialog
+                            .show(this@SignupActivity,
+                                "Shifting Towards MainAcitivty",
+                                "");
+                        progressDialog.show()
                         val intent = Intent(this@SignupActivity,MainActivity::class.java);
                         startActivity(intent)
                     Toast.makeText(applicationContext,"Succesfully Registered",Toast.LENGTH_LONG).show()
