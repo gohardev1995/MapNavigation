@@ -14,7 +14,6 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
-import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -30,10 +29,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.gms.tasks.Task
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -46,6 +42,7 @@ import com.google.gson.Gson
 import com.invotech.runshuffle.Object.SaveSharedPreference
 import com.invotech.runshuffle.R
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.progrss_dialog.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.*
@@ -93,9 +90,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        buildAlertMessageNoGps()
-        getCurrentLocation()
-
+       getCurrentLocation()
 
         arr = ArrayList<String>()
         arr.add("walking")
@@ -751,7 +746,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
                 //move map camera
-               /* val latLng = LatLng(location.latitude, location.longitude)
+             /*   val latLng = LatLng(location.latitude, location.longitude)
                 val cameraPosition = CameraPosition.Builder().target(LatLng(latLng.latitude, latLng.longitude)).zoom(16f).build()
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))*/
             }
@@ -804,26 +799,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                         mMap.isMyLocationEnabled = true
                     }
                 } else {
+
                     // if not allow a permission, the application will exit
 
                 }
             }
         }
     }
-    private fun buildAlertMessageNoGps() {
-        val builder =
-            AlertDialog.Builder(this)
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
-            .setCancelable(false)
-            .setPositiveButton(
-                "Yes"
-            ) { dialog, id -> startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) }
-            .setNegativeButton(
-                "No"
-            ) { dialog, id -> dialog.cancel() }
-        val alert = builder.create()
-        alert.show()
-    }
+
 
 
 }
