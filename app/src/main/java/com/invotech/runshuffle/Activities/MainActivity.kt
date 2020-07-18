@@ -14,6 +14,7 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
+import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -29,7 +30,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.tasks.Task
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -89,8 +93,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        /* getsourceLocation()
-         destinationLocation()*/
+        buildAlertMessageNoGps()
+        getCurrentLocation()
+
 
         arr = ArrayList<String>()
         arr.add("walking")
@@ -126,7 +131,86 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 
+        txt_get_route.setOnClickListener {
+            val buttonTimer = Timer()
+            val progressDialog =
+                ProgressDialog(this@MainActivity)
+            if (TextUtils.isEmpty(edt_destination.text.toString())) {
+                Toast.makeText(
+                    applicationContext,
+                    "Please Add Destination Place First",
+                    Toast.LENGTH_SHORT
+                ).show()
 
+            } else {
+
+                if (source == null && destination.toString().isNotEmpty()) {
+
+                    if (onIndex == 0) {
+                        /*calculateRoute(getLocation, destination, arr[0])*/
+                        mMap.addMarker(MarkerOptions().position(getLocation))
+                        mMap.addMarker(MarkerOptions().position(destination))
+                        onIndex = 1
+                        /*txt_get_route.setText("search")*/
+                    } else {
+
+                        /*calculateRoute(getLocation, destination, arr[1])*/
+                        mMap.addMarker(MarkerOptions().position(getLocation))
+                        mMap.addMarker(MarkerOptions().position(destination))
+
+                        onIndex = 0
+
+                    }
+
+
+                    /*mMap.addMarker(MarkerOptions().position(getLocation))*/
+                    buttonTimer.schedule(object : TimerTask() {
+                        override fun run() {
+                            runOnUiThread {
+
+                                /*progressDialog.setTitle("ProgressDialog");
+                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progressDialog.window
+                                progressDialog.max = 100;
+                                progressDialog.max;
+                                progressDialog.show()*/
+
+                                calculateRoute(getLocation, destination, arr[onIndex])
+
+                                mMap.addMarker(MarkerOptions().position(getLocation))
+                                mMap.addMarker(MarkerOptions().position(destination))
+
+
+                            }
+                        }
+                    }, 2000)/*
+                 progressDialog.dismiss()*/
+
+                } else {
+                    if (onIndex == 0) {
+
+                        mMap.addMarker(MarkerOptions().position(source!!))
+                        mMap.addMarker(MarkerOptions().position(destination))
+
+                        onIndex = 1
+
+                    } else {
+
+                        mMap.addMarker(MarkerOptions().position(source!!))
+                        mMap.addMarker(MarkerOptions().position(destination))
+
+                        onIndex = 0
+
+                    }
+                    calculateRoute(source!!, destination, arr[onIndex])
+                    mMap.addMarker(MarkerOptions().position(source!!))
+                    mMap.addMarker(MarkerOptions().position(destination))
+                    /*return calculateRoute(source!!,destination,"driving")*/
+                }
+
+            }
+
+        }
 
         edt_destination.setOnClickListener {
 
@@ -188,7 +272,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         } else {
             mFusedLocationClient!!.requestLocationUpdates(mLocationRequest, mLocationCallback,
                 Looper.myLooper())
-            mGoogleMap!!.isMyLocationEnabled = true
+            mMap.isMyLocationEnabled = true
         }
        /* getCurrentLocation()*/
 
@@ -376,10 +460,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val progress = ProgressDialog(this)
         progress.setMessage("Creating Alternate Route");
-        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
-        progress.progress = 100;
-        progress.show();
         if (TextUtils.isEmpty(edt_destination.text.toString())) {
             Toast.makeText(
                 applicationContext,
@@ -392,7 +474,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             if (source == null && destination.toString().isNotEmpty()) {
 
                 if (onIndex == 0) {
-
                     /*calculateRoute(getLocation, destination, arr[0])*/
                     mMap.addMarker(MarkerOptions().position(getLocation))
                     mMap.addMarker(MarkerOptions().position(destination))
@@ -408,7 +489,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 }
 
+
                 calculateRoute(getLocation, destination, arr[onIndex])
+
                 mMap.addMarker(MarkerOptions().position(getLocation))
                 mMap.addMarker(MarkerOptions().position(destination))
 
@@ -448,6 +531,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val URL = getDirectionURL(origin, dest, mode)
         Log.d("GoogleMap", "URL : $URL")
         GetDirection(URL).execute()
+        mMap.clear()
 
 
     }
@@ -667,9 +751,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
                 //move map camera
-                val latLng = LatLng(location.latitude, location.longitude)
+               /* val latLng = LatLng(location.latitude, location.longitude)
                 val cameraPosition = CameraPosition.Builder().target(LatLng(latLng.latitude, latLng.longitude)).zoom(16f).build()
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))*/
             }
         }
     }
@@ -726,7 +810,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
-
+    private fun buildAlertMessageNoGps() {
+        val builder =
+            AlertDialog.Builder(this)
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+            .setCancelable(false)
+            .setPositiveButton(
+                "Yes"
+            ) { dialog, id -> startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) }
+            .setNegativeButton(
+                "No"
+            ) { dialog, id -> dialog.cancel() }
+        val alert = builder.create()
+        alert.show()
+    }
 
 
 }

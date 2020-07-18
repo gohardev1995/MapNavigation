@@ -1,5 +1,6 @@
 package com.invotech.runshuffle.Activities
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+@Suppress("DEPRECATION")
 class ForgetPasswordActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +35,11 @@ class ForgetPasswordActivity : AppCompatActivity() {
                     Log.d("Gohar",response.code().toString())
                     if (response.code() == 200)
                     {
+                        val progressDialog = ProgressDialog
+                            .show(this@ForgetPasswordActivity,
+                                "Shifting Towards MainAcitivty",
+                                "");
+                        progressDialog.show()
                         Toast.makeText(applicationContext,"Password Reset Confirmation is Sent to Your Email, Please Check your Email",Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this@ForgetPasswordActivity,LoginActivity::class.java))
 
