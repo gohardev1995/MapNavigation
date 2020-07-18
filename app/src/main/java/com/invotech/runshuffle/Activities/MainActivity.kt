@@ -29,7 +29,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.tasks.Task
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -42,7 +45,6 @@ import com.google.gson.Gson
 import com.invotech.runshuffle.Object.SaveSharedPreference
 import com.invotech.runshuffle.R
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.progrss_dialog.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.*
@@ -75,6 +77,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         Place.Field.ADDRESS,
         Place.Field.LAT_LNG
     )
+    private var destMarker : Marker? = null
+    private var sourceMarker : Marker? = null
+    private lateinit var currentMarker : Marker
+
     //----------------------------------------------------------//
     var mGoogleMap: GoogleMap? = null
     var mapFrag: SupportMapFragment? = null
@@ -127,10 +133,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         txt_get_route.setOnClickListener {
-            val buttonTimer = Timer()
+            val dialog =
+                ProgressDialog.show(
+                    this@MainActivity, "",
+                    "Loading. Please wait...", true
+                )
+             val buttonTimer = Timer()
             val progressDialog =
                 ProgressDialog(this@MainActivity)
             if (TextUtils.isEmpty(edt_destination.text.toString())) {
+                dialog.dismiss()
                 Toast.makeText(
                     applicationContext,
                     "Please Add Destination Place First",
@@ -163,6 +175,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                         override fun run() {
                             runOnUiThread {
 
+
                                 /*progressDialog.setTitle("ProgressDialog");
                                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 progressDialog.window
@@ -177,8 +190,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
                             }
+                            dialog.dismiss();
                         }
-                    }, 2000)/*
+                    }, 4000)
+                    /*
                  progressDialog.dismiss()*/
 
                 } else {
@@ -197,9 +212,28 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                         onIndex = 0
 
                     }
-                    calculateRoute(source!!, destination, arr[onIndex])
-                    mMap.addMarker(MarkerOptions().position(source!!))
-                    mMap.addMarker(MarkerOptions().position(destination))
+                    buttonTimer.schedule(object : TimerTask() {
+                        override fun run() {
+                            runOnUiThread {
+
+
+                                /*progressDialog.setTitle("ProgressDialog");
+                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progressDialog.window
+                                progressDialog.max = 100;
+                                progressDialog.max;
+                                progressDialog.show()*/
+
+                                calculateRoute(source!!, destination, arr[onIndex])
+                                mMap.addMarker(MarkerOptions().position(source!!))
+                                mMap.addMarker(MarkerOptions().position(destination))
+
+
+                            }
+                            dialog.dismiss();
+                        }
+                    }, 4000)
+
                     /*return calculateRoute(source!!,destination,"driving")*/
                 }
 
@@ -222,21 +256,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         txt_logout.setOnClickListener {
 
+
             SaveSharedPreference.setLoggedIn(
                 applicationContext,
                 false
 
 
             )
+            startActivity(Intent(this@MainActivity,LoginActivity::class.java))
 
 
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.getStringExtra("email")
-            intent.getStringExtra("password")
+            /*val intent = Intent(this, LoginActivity::class.java)
 
 
 
-            startActivity(intent)
+            startActivity(intent)*/
         }
         /*new FetchURL(MapActivity.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
         */
@@ -276,6 +310,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
             destination = dest
             edt_destination.setText(dest.latitude.toString() + " , " + dest.longitude)
+            edt_destination.textSize = 10f
             /* edt_destination.setText(dest.latitude.toString(),dest.longitude)*/
             if (source == null && destination.toString().isNotEmpty()) {
 
@@ -343,7 +378,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val task: Task<Location> = fusedLocationProviderClient.lastLocation
         task.addOnSuccessListener { locateUser ->
             getLocation = LatLng(locateUser?.latitude!!, locateUser.longitude)
-            mMap.addMarker(MarkerOptions().position(getLocation))
+            currentMarker =  mMap.addMarker(MarkerOptions().position(getLocation))
+
             /*
             /*edt_source.setText("My Location")*/
              */
@@ -693,22 +729,37 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         if (requestCode == SOURCE_PLACE && resultCode == Activity.RESULT_OK ) {
 
             val sourceplace = Autocomplete.getPlaceFromIntent(data!!)
-
-
             val queriedLocation = sourceplace.latLng
             source = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
             edt_source.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude)
-            mMap.addMarker(MarkerOptions().position(source!!).title("Source"))
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(source, 15f))
+            currentMarker.remove()
+            val markerOptions = MarkerOptions()
+            if(sourceMarker != null)
+            {
+                sourceMarker!!.remove()
+            }
+            markerOptions.position(source!!)
+            sourceMarker =  mMap.addMarker(markerOptions)
+
         }
         else if (requestCode == DEST_PLACE && resultCode == Activity.RESULT_OK)
         {
+
 
             val destplace = Autocomplete.getPlaceFromIntent(data!!)
             val queriedLocation = destplace.latLng
             destination = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
             edt_destination.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude)
-            mMap.addMarker(MarkerOptions().position(destination).title("Destination"))
+
+            val markerOptions = MarkerOptions()
+            if(destMarker != null)
+            {
+                destMarker!!.remove()
+            }
+            markerOptions.position(destination)
+            destMarker =  mMap.addMarker(markerOptions)
+
+
 
 
 

@@ -132,7 +132,7 @@ class LoginActivity : AppCompatActivity() {
                     } else
                         Toast.makeText(
                             applicationContext,
-                            "Invalid Credentials Or Confirm the CheckBox",
+                            "Invalid Credentials",
                             Toast.LENGTH_SHORT
                         ).show()
 
@@ -148,22 +148,17 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun getPreferencesData() {
-        if (sharedPreferences.contains("pref_email"))
-        {
-            val useremail = sharedPreferences.getString("pref_email","not found")
+        if (sharedPreferences.contains("pref_email") && sharedPreferences.contains("pref_pass") && sharedPreferences.contains("pref_check")) {
+            val useremail = sharedPreferences.getString("pref_email", "not found")
             edt_email.setText(useremail)
-        }
-        if(sharedPreferences.contains("pref_pass"))
-        {
-            val userpass = sharedPreferences.getString("pref_pass","not found")
+            val userpass = sharedPreferences.getString("pref_pass", "not found")
             edt_password.setText(userpass)
+            val b = sharedPreferences.getBoolean("pref_check", false)
+            chk_remember.isChecked = b
 
         }
-        if(sharedPreferences.contains("pref_check"))
-        {
-            val b = sharedPreferences.getBoolean("pref_check",false)
-            chk_remember.isChecked = b
-        }
+
+
 
 
     }
