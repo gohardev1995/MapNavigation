@@ -25,10 +25,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -306,17 +303,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
        /* getCurrentLocation()*/
 
         mMap.setOnMapClickListener { dest ->
+           /* val markerOptions = MarkerOptions()
 
-
+            mMap.clear()*/
             destination = dest
             edt_destination.setText(dest.latitude.toString() + " , " + dest.longitude)
             edt_destination.textSize = 10f
+
             /* edt_destination.setText(dest.latitude.toString(),dest.longitude)*/
             if (source == null && destination.toString().isNotEmpty()) {
 
                 calculateRoute(getLocation, destination, "walking")
                 mMap.addMarker(MarkerOptions().position(getLocation))
-                mMap.addMarker(MarkerOptions().position(destination))
+                val markerOptions = MarkerOptions()
+                markerOptions.position(destination)
+                destMarker =  mMap.addMarker(markerOptions)
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(destination, 15f))
 
 
@@ -465,6 +466,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     fun getDestinationLocation(view: View) {
         edt_destination.text = null
         mMap.clear()
+        if (source == null && destination.toString().isNotEmpty())
+        {
+            mMap.addMarker(MarkerOptions().position(getLocation))
+        }
+        else
+        mMap.addMarker(MarkerOptions().position(source!!))
 
     }
 
@@ -727,37 +734,65 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SOURCE_PLACE && resultCode == Activity.RESULT_OK ) {
-
+            mMap.clear()
+            edt_destination.setText("")
             val sourceplace = Autocomplete.getPlaceFromIntent(data!!)
             val queriedLocation = sourceplace.latLng
             source = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
-            edt_source.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude)
+            edt_source.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude.toString())
+            edt_source.textSize = 10f
             currentMarker.remove()
             val markerOptions = MarkerOptions()
             if(sourceMarker != null)
             {
                 sourceMarker!!.remove()
             }
-            markerOptions.position(source!!)
+            if (source == null && destination.toString().isNotEmpty())
+            {
+                markerOptions.position(getLocation)
+            }
+            else
+            {
+                markerOptions.position(source!!)
+
+            }
+
+
             sourceMarker =  mMap.addMarker(markerOptions)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(source!!,15f))
+
+
+
 
         }
         else if (requestCode == DEST_PLACE && resultCode == Activity.RESULT_OK)
         {
 
+            mMap.clear()
 
             val destplace = Autocomplete.getPlaceFromIntent(data!!)
             val queriedLocation = destplace.latLng
             destination = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
             edt_destination.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude)
+            edt_destination.textSize = 10f
+            btn_destination_location.isEnabled = true
 
             val markerOptions = MarkerOptions()
             if(destMarker != null)
             {
+
                 destMarker!!.remove()
             }
             markerOptions.position(destination)
-            destMarker =  mMap.addMarker(markerOptions)
+            mMap.addMarker(markerOptions)
+            if (source == null && destination.toString().isNotEmpty())
+            {
+                mMap.addMarker(MarkerOptions().position(getLocation))
+
+            }
+            else
+                mMap.addMarker(MarkerOptions().position(source!!))
+
 
 
 

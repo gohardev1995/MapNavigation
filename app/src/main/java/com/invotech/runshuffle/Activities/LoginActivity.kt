@@ -13,6 +13,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.maps.model.MarkerOptions
 import com.invotech.runshuffle.Interfaces.LoginAPI
 import com.invotech.runshuffle.Models.LoginUser
 import com.invotech.runshuffle.Object.APIClient
@@ -22,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 
 @Suppress("DEPRECATION")
@@ -93,16 +95,51 @@ class LoginActivity : AppCompatActivity() {
                             SharedEditor.putString("pref_email",edt_email.text.toString())
                             SharedEditor.putString("pref_pass",edt_password.text.toString())
                             SharedEditor.putBoolean("pref_check",boolisChecked)
+                            SaveSharedPreference.setLoggedIn(
+                                applicationContext,
+                                true
+                            )
                             SharedEditor.apply()
+
 
                         }
                         else
                             sharedPreferences.edit().clear().apply()
 
+                        val dialog =
+                            ProgressDialog.show(
+                                this@LoginActivity, "",
+                                "Loading. Please wait...", true
+                            )
+                        val buttonTimer = Timer()
+                        val progressDialog =
+                            ProgressDialog(this@LoginActivity)
+
+                        buttonTimer.schedule(object : TimerTask() {
+                            override fun run() {
+                                runOnUiThread {
+
+
+                                    /*progressDialog.setTitle("ProgressDialog");
+                                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                    progressDialog.window
+                                    progressDialog.max = 100;
+                                    progressDialog.max;
+                                    progressDialog.show()*/
+                                    val intent = Intent(applicationContext,MainActivity::class.java)
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK)
+                                    Toast.makeText(applicationContext, "Succesfully Logged In ", Toast.LENGTH_SHORT).show()
+
+                                    startActivity(intent)
+                                    finish()
 
 
 
-                        val intent = Intent(applicationContext,MainActivity::class.java)
+
+                                }
+                                dialog.dismiss();
+                            }
+                        }, 4000)
                         /*intent.putExtra("email",edt_email.text.toString())
                         intent.putExtra("password",edt_password.text.toString())
 
@@ -113,22 +150,10 @@ class LoginActivity : AppCompatActivity() {
                         edt_password.setText(password)
                         Log.d("gohar",username)
                         Log.d("gohar",password)*/
-                        val progressDialog = ProgressDialog
-                            .show(this@LoginActivity,
-                                "Shifting Towards MainAcitivty",
-                                "");
-                        progressDialog.show()
 
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK)
-                        Toast.makeText(applicationContext, "Succesfully Logged In ", Toast.LENGTH_SHORT).show()
 
-                        startActivity(intent)
-                        finish()
 
-                        SaveSharedPreference.setLoggedIn(
-                            applicationContext,
-                            true
-                        )
+
                     } else
                         Toast.makeText(
                             applicationContext,

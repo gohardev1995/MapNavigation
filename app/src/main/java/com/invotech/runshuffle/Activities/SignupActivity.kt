@@ -12,6 +12,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.maps.model.MarkerOptions
 import com.invotech.runshuffle.Interfaces.RegisterAPI
 import com.invotech.runshuffle.Models.RegisterUser
 import com.invotech.runshuffle.Object.APIClient
@@ -20,6 +21,7 @@ import kotlinx.android.synthetic.main.activity_signup.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 
 @Suppress("DEPRECATION")
@@ -56,45 +58,94 @@ class SignupActivity : AppCompatActivity() {
 
         //---------------------------------Calling POST API RETROFIT------------------------------//
         btn_signup.setOnClickListener(View.OnClickListener {
-
-            val RegisterApi = APIClient.client.create(RegisterAPI::class.java)
-            val callRegisterApi = RegisterApi.RegisterUser(
-                edt_name.text.toString(),
-                edt_email.text.toString(),
-                edt_password.text.toString()
-            )
-            callRegisterApi.enqueue(object : Callback<RegisterUser> {
-                override fun onFailure(call: Call<RegisterUser>, t: Throwable) {
-                    Toast.makeText(applicationContext,"Registration Failed",Toast.LENGTH_SHORT).show()
+            if (  TextUtils.isEmpty(edt_name.text.toString()) || TextUtils.isEmpty(edt_email.text.toString()) || TextUtils.isEmpty(edt_password.text.toString()) || TextUtils.isEmpty(edt_c_password.text.toString()))
+            {
+                if(TextUtils.isEmpty(edt_name.text.toString()))
+                {
+                    Toast.makeText(applicationContext,"Please Enter Your Name",Toast.LENGTH_SHORT).show()
                 }
+                else if(TextUtils.isEmpty(edt_email.text.toString()))
+                {
+                    Toast.makeText(applicationContext,"Please Enter Your Email",Toast.LENGTH_SHORT).show()
+                }
+                else if(TextUtils.isEmpty(edt_password.text.toString()))
+                {
+                    Toast.makeText(applicationContext,"Please Enter Your Password",Toast.LENGTH_SHORT).show()
+                }
+                else if(TextUtils.isEmpty(edt_c_password.text.toString()))
+                {
+                    Toast.makeText(applicationContext,"Please Re-Enter Your Password",Toast.LENGTH_SHORT).show()
+                }
+                else if(!chk_conscent.isChecked)
+                {
+                    Toast.makeText(applicationContext,"Please Confirm the CheckBox",Toast.LENGTH_SHORT).show()
+                }
+                else
+                    Toast.makeText(applicationContext,"Please Enter All Credentials ",Toast.LENGTH_SHORT).show()
 
-                override fun onResponse(call: Call<RegisterUser>, response: Response<RegisterUser>) {
-                    if(response.code() == 200 || TextUtils.isEmpty(edt_name.text.toString()) || TextUtils.isEmpty(edt_email.text.toString()) || TextUtils.isEmpty(edt_password.text.toString()) || TextUtils.isEmpty(edt_c_password.text.toString()) || !chk_conscent.isChecked || edt_password.text.toString() == edt_c_password.text.toString())
-                    {
 
-                            edt_name.setError("Please Enter Your Name")
-                            edt_email.setError("Please Enter Your Email")
-                            edt_password.setError("Please Enter Your Password")
-                            edt_c_password.setError("Please Re-enter your Password")
-                            Toast.makeText(applicationContext,"Please Confirm the CheckBox",Toast.LENGTH_SHORT).show()
+
+            }
+            else
+            {
+                val RegisterApi = APIClient.client.create(RegisterAPI::class.java)
+                val callRegisterApi = RegisterApi.RegisterUser(
+                    edt_name.text.toString(),
+                    edt_email.text.toString(),
+                    edt_password.text.toString()
+                )
+                callRegisterApi.enqueue(object : Callback<RegisterUser> {
+                    override fun onFailure(call: Call<RegisterUser>, t: Throwable) {
+                        Toast.makeText(applicationContext,"This Email Has been Registered Already",Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onResponse(call: Call<RegisterUser>, response: Response<RegisterUser>) {
+                        Log.d("Gohar",response.code().toString())
+                        if (response.code() == 401 )
+                        {
+                            Toast.makeText(applicationContext,"This email is Already Registered",Toast.LENGTH_SHORT).show()
+                        }
+                        else
+                        {
+                            val dialog =
+                                ProgressDialog.show(
+                                    this@SignupActivity, "",
+                                    "Loading. Please wait...", true
+                                )
+                            val buttonTimer = Timer()
+                            val progressDialog =
+                                ProgressDialog(this@SignupActivity)
+                            buttonTimer.schedule(object : TimerTask() {
+                                override fun run() {
+                                    runOnUiThread {
+
+
+                                        /*progressDialog.setTitle("ProgressDialog");
+                                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                        progressDialog.window
+                                        progressDialog.max = 100;
+                                        progressDialog.max;
+                                        progressDialog.show()*/
+                                        Toast.makeText(applicationContext,"Succesffuly Registered",Toast.LENGTH_SHORT).show()
+                                        startActivity(Intent(this@SignupActivity,MainActivity::class.java))
+
+
+
+
+                                    }
+                                    dialog.dismiss();
+                                }
+                            }, 4000)
+
+
+                        }
 
                     }
-                    else
-                    {
 
-                        val progressDialog = ProgressDialog
-                            .show(this@SignupActivity,
-                                "Shifting Towards MainAcitivty",
-                                "");
-                        progressDialog.show()
-                        val intent = Intent(this@SignupActivity,MainActivity::class.java);
-                        startActivity(intent)
-                    Toast.makeText(applicationContext,"Succesfully Registered",Toast.LENGTH_LONG).show()
+                })
+            }
 
-                    }
-                }
 
-            })
         })
         //-------------------------------</Calling POST API RETROFIT/>----------------------------//
 
