@@ -17,6 +17,8 @@ import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -25,7 +27,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -48,7 +53,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @Suppress("DEPRECATION")
-class MainActivity : AppCompatActivity(), OnMapReadyCallback {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListener {
 
     //----------------------------------------Assigning Variables---------------------------------//
     private lateinit var customDialogDest: View
@@ -85,6 +90,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     var mLastLocation: Location? = null
     var mCurrLocationMarker: Marker? = null
     var mFusedLocationClient: FusedLocationProviderClient? = null
+    private lateinit var mapFragment : SupportMapFragment
     //----------------------------------------------------------//
 
     //-----------------------------------</Assigning Variables/>----------------------------------//
@@ -94,6 +100,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_main)
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
        getCurrentLocation()
+
 
         arr = ArrayList<String>()
         arr.add("walking")
@@ -110,11 +117,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         /*mMap.addMarker(MarkerOptions().position(source!!).title("Source"))*/
         /* mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(source, 15f))*/
+        btn_round_routes.setOnClickListener(this)
+        btn_clear_all.setOnClickListener(this)
+        btn_normal.setOnClickListener(this)
 
-
-        val mapFragment = supportFragmentManager
+        mapFrag = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        mapFrag?.getMapAsync(this)
 //edt_destination
         edt_source.setOnClickListener {
             val intent: Intent = Autocomplete.IntentBuilder(
@@ -126,6 +135,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         }
+
+
 
 
 
@@ -673,11 +684,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     }
-
-
     fun getDirectionURL(source: LatLng, destination: LatLng, mode: String): String {
         return "https://maps.googleapis.com/maps/api/directions/json?origin=${source.latitude},${source.longitude}&destination=${destination.latitude},${destination.longitude}&sensor=false&mode=${mode}&maptype=normal,+CA&key=AIzaSyCn_Rpi7ierJ-yxJS-xCGSMfAjSfoz7_u4"
         /*"https://maps.googleapis.com/maps/api/directions/json?origin=${source.latitude},${source.longitude}&destination=${destination.latitude},${destination.longitude}&sensor=false&mode=driving"*/
+    }
+    fun getRoundURL(source: LatLng, length : Int): String {
+        return "https://maps.openrouteservice.org/directions?n1={${source.latitude}}&n2={${source.longitude}}&n3=17&a={${source.latitude},${source.longitude}}&b=0&r1={$length}&c=0&k1=en-US&k2=5b3ce3597851110001cf6248bda92fbd5b334daca44487ed1f86c865"
+
     }
 
     fun getSourceInflate(view: View) {
@@ -893,6 +906,53 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+
+    override fun onClick(v: View?) {
+        when(v?.id)
+        {
+            R.id.btn_clear_all -> {
+                btn_clear_all.setBackgroundColor(Color.GREEN)
+                img_round.visibility = GONE
+                img2.visibility = VISIBLE
+                edt_destination.text = null
+                edt_source.text = null
+                mMap.clear()
+
+            }
+            R.id.btn_round_routes -> {
+                edt_destination.setText(null)
+                edt_source.setText("My Location")
+                edt_round_route.visibility = VISIBLE
+                edt_destination.visibility = GONE
+                img2.visibility = GONE
+                img_round.visibility = VISIBLE
+                mMap.clear()
+                getCurrentLocation()
+                mMap.setOnMapClickListener(null)
+                txt_get_route.setOnClickListener{
+                    Toast.makeText(applicationContext,"Hello Fraand",Toast.LENGTH_SHORT).show()
+                    val URL = getRoundURL(getLocation,10)
+                    GetDirection(URL).execute()
+
+
+
+
+                }
+
+
+
+            }
+            R.id.btn_normal -> {
+                edt_destination.setText(null)
+                edt_source.setText("My Location")
+                img_round.visibility = GONE
+                img2.visibility = VISIBLE
+                mMap.clear()
+
+                getCurrentLocation()
+            }
+        }
+    }
 
 
 }

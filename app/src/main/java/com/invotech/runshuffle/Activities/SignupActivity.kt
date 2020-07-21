@@ -120,12 +120,7 @@ class SignupActivity : AppCompatActivity() {
                                     runOnUiThread {
 
 
-                                        /*progressDialog.setTitle("ProgressDialog");
-                                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                        progressDialog.window
-                                        progressDialog.max = 100;
-                                        progressDialog.max;
-                                        progressDialog.show()*/
+                                       
                                         Toast.makeText(applicationContext,"Succesffuly Registered",Toast.LENGTH_SHORT).show()
                                         startActivity(Intent(this@SignupActivity,MainActivity::class.java))
 
