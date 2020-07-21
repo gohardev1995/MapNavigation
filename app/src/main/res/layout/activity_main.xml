@@ -224,7 +224,6 @@
                 android:layout_height="40dp"
                 android:layout_weight="3"
                 android:background="@drawable/custom_edittext"
-                android:onClick="getDestinationInflator"
                 android:padding="10dp" />
             <EditText
                 android:padding="10dp"

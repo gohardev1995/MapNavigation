@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -20,6 +21,10 @@ import com.invotech.runshuffle.Object.APIClient
 import com.invotech.runshuffle.Object.SaveSharedPreference
 import com.invotech.runshuffle.R
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.edt_email
+import kotlinx.android.synthetic.main.activity_login.edt_password
+import kotlinx.android.synthetic.main.activity_login.txt_forgot_password
+import kotlinx.android.synthetic.main.activity_signup.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,11 +39,24 @@ class LoginActivity : AppCompatActivity() {
     private var myPreference = "myPrefs"
 
 
+    @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         sharedPreferences = getSharedPreferences(myPreference, Context.MODE_PRIVATE)
         getPreferencesData()
+        chk_remember.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (buttonView.isChecked)
+            {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    btn_signin.background = resources.getDrawable(R.drawable.custom_btn_signup)
+                    btn_signin.setTextColor(R.color.btnColor)
+                }
+            }
+            else
+                btn_signin.background = resources.getDrawable(R.drawable.custom_btn)
+
+        }
 
         if (SaveSharedPreference.getLoggedStatus(applicationContext)) {
             val intent = Intent(applicationContext, MainActivity::class.java)
@@ -71,99 +89,102 @@ class LoginActivity : AppCompatActivity() {
         //--------------------</Adding OnClick Listerns to Buttons/>------------------------------//
         //-----------------------Calling LogIn POST RETROFIT API----------------------------------//
         btn_signin.setOnClickListener(View.OnClickListener {
-            val LoginAPI = APIClient.client.create(LoginAPI::class.java)
-            val callLoginApi = LoginAPI.createUser(
+            val dialog =
+                ProgressDialog.show(
+                    this@LoginActivity, "",
+                    "Loading. Please wait...", true
+                )
+            btn_signin.isEnabled = false
+            val buttonTimer = Timer()
+            val progressDialog =
+                ProgressDialog(this@LoginActivity)
+            buttonTimer.schedule(object : TimerTask() {
+                override fun run() {
+                    runOnUiThread {
+                        btn_signup.isEnabled = true
+                        val LoginAPI = APIClient.client.create(LoginAPI::class.java)
+                        val callLoginApi = LoginAPI.createUser(
 
-                edt_email.text.toString(),
-                edt_password.text.toString()
-            )
-            callLoginApi.enqueue(object : Callback<LoginUser> {
-                override fun onFailure(call: Call<LoginUser>, t: Throwable) {
+                            edt_email.text.toString(),
+                            edt_password.text.toString()
+                        )
+                        callLoginApi.enqueue(object : Callback<LoginUser> {
+                            override fun onFailure(call: Call<LoginUser>, t: Throwable) {
 
-                }
-
-                @SuppressLint("CommitPrefEdits")
-                override fun onResponse(call: Call<LoginUser>, response: Response<LoginUser>) {
-                    Log.d("Gohar", response.code().toString())
-                    Log.e("Gohar",response.code().toString())
-                    if (response.code() == 200) {
-                        if(chk_remember.isChecked)
-                        {
-
-                            val boolisChecked = chk_remember.isChecked
-                            SharedEditor = sharedPreferences.edit()
-                            SharedEditor.putString("pref_email",edt_email.text.toString())
-                            SharedEditor.putString("pref_pass",edt_password.text.toString())
-                            SharedEditor.putBoolean("pref_check",boolisChecked)
-                            SaveSharedPreference.setLoggedIn(
-                                applicationContext,
-                                true
-                            )
-                            SharedEditor.apply()
-
-
-                        }
-                        else
-                            sharedPreferences.edit().clear().apply()
-
-                        val dialog =
-                            ProgressDialog.show(
-                                this@LoginActivity, "",
-                                "Loading. Please wait...", true
-                            )
-                        val buttonTimer = Timer()
-                        val progressDialog =
-                            ProgressDialog(this@LoginActivity)
-
-                        buttonTimer.schedule(object : TimerTask() {
-                            override fun run() {
-                                runOnUiThread {
-
-
-                                    /*progressDialog.setTitle("ProgressDialog");
-                                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                    progressDialog.window
-                                    progressDialog.max = 100;
-                                    progressDialog.max;
-                                    progressDialog.show()*/
-                                    val intent = Intent(applicationContext,MainActivity::class.java)
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK)
-                                    Toast.makeText(applicationContext, "Succesfully Logged In ", Toast.LENGTH_SHORT).show()
-
-                                    startActivity(intent)
-                                    finish()
-
-
-
-
-                                }
-                                dialog.dismiss();
                             }
-                        }, 4000)
-                        /*intent.putExtra("email",edt_email.text.toString())
-                        intent.putExtra("password",edt_password.text.toString())
 
-                        val username = intent.getStringExtra("email")
-                        val password = intent.getStringExtra("password")
+                            @SuppressLint("CommitPrefEdits")
+                            override fun onResponse(call: Call<LoginUser>, response: Response<LoginUser>) {
+                                Log.d("Gohar", response.code().toString())
+                                Log.e("Gohar",response.code().toString())
+                                if (response.code() == 200) {
+                                    if(chk_remember.isChecked)
+                                    {
 
-                        edt_email.setText(username)
-                        edt_password.setText(password)
-                        Log.d("gohar",username)
-                        Log.d("gohar",password)*/
+                                        val boolisChecked = chk_remember.isChecked
+                                        SharedEditor = sharedPreferences.edit()
+                                        SharedEditor.putString("pref_email",edt_email.text.toString())
+                                        SharedEditor.putString("pref_pass",edt_password.text.toString())
+                                        SharedEditor.putBoolean("pref_check",boolisChecked)
+                                        SaveSharedPreference.setLoggedIn(
+                                            applicationContext,
+                                            true
+                                        )
+                                        SharedEditor.apply()
+
+
+                                    }
+                                    else
+                                        sharedPreferences.edit().clear().apply()
+
+
+
+                                    /*intent.putExtra("email",edt_email.text.toString())
+                                    intent.putExtra("password",edt_password.text.toString())
+
+                                    val username = intent.getStringExtra("email")
+                                    val password = intent.getStringExtra("password")
+
+                                    edt_email.setText(username)
+                                    edt_password.setText(password)
+                                    Log.d("gohar",username)
+                                    Log.d("gohar",password)*/
 
 
 
 
-                    } else
-                        Toast.makeText(
-                            applicationContext,
-                            "Invalid Credentials",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                                } else
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "Invalid Credentials",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
 
+                            }
+
+                        })
+
+                        /*progressDialog.setTitle("ProgressDialog");
+                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        progressDialog.window
+                        progressDialog.max = 100;
+                        progressDialog.max;
+                        progressDialog.show()*/
+                        val intent = Intent(applicationContext,MainActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK)
+                        Toast.makeText(applicationContext, "Succesfully Logged In ", Toast.LENGTH_SHORT).show()
+
+                        startActivity(intent)
+                        finish()
+
+
+
+
+                    }
+                    dialog.dismiss();
                 }
+            }, 4000)
 
-            })
 
 
 
@@ -211,3 +232,7 @@ class LoginActivity : AppCompatActivity() {
     //-----------------------------------</Function to Hide Keyboard/>----------------------------//
 
 }
+
+
+
+

@@ -44,11 +44,19 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.gson.Gson
+import com.invotech.runshuffle.Interfaces.Routes
+import com.invotech.runshuffle.Models.RegisterUser
+import com.invotech.runshuffle.Models.RoundMaps
+import com.invotech.runshuffle.Object.APIRound
 import com.invotech.runshuffle.Object.SaveSharedPreference
 import com.invotech.runshuffle.R
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import retrofit2.Call
+import retrofit2.Response
+
+import retrofit2.Callback
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -102,21 +110,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
        getCurrentLocation()
 
 
+
         arr = ArrayList<String>()
         arr.add("walking")
         arr.add("driving")
-        /*Sourceview = SourceStub.inflate()
-        getsourceLocation()
-        DestinationView = DestinationStub.inflate()
-        destinationLocation()*/
 
-        /*  Log.d("gohar",latitude.toString() + " ," +longitude.toString())
-          source = LatLng(latitude,longitude)
-          mMap.addMarker(MarkerOptions().position(source!!))*/
-
-
-        /*mMap.addMarker(MarkerOptions().position(source!!).title("Source"))*/
-        /* mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(source, 15f))*/
         btn_round_routes.setOnClickListener(this)
         btn_clear_all.setOnClickListener(this)
         btn_normal.setOnClickListener(this)
@@ -184,12 +182,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
                             runOnUiThread {
 
 
-                                /*progressDialog.setTitle("ProgressDialog");
-                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                progressDialog.window
-                                progressDialog.max = 100;
-                                progressDialog.max;
-                                progressDialog.show()*/
 
                                 calculateRoute(getLocation, destination, arr[onIndex])
 
@@ -225,12 +217,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
                             runOnUiThread {
 
 
-                                /*progressDialog.setTitle("ProgressDialog");
-                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                progressDialog.window
-                                progressDialog.max = 100;
-                                progressDialog.max;
-                                progressDialog.show()*/
+
 
                                 calculateRoute(source!!, destination, arr[onIndex])
                                 mMap.addMarker(MarkerOptions().position(source!!))
@@ -274,14 +261,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
             startActivity(Intent(this@MainActivity,LoginActivity::class.java))
 
 
-            /*val intent = Intent(this, LoginActivity::class.java)
-
-
-
-            startActivity(intent)*/
         }
-        /*new FetchURL(MapActivity.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
-        */
+
         //----------------------------Google Place API KEY----------------------------------------//
         Places.initialize(this, getString(R.string.places_api))
         //---------------------------</Google Place API KEY/>-------------------------------------//
@@ -402,31 +383,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
 
         }
 
-        /*val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_CODE
-            )
-            return
-        }
-        val task: Task<Location> = fusedLocationProviderClient.lastLocation
-        task.addOnSuccessListener { locateUser ->
-            mMap.clear()
-            val location1 = LatLng(locateUser.longitude,locateUser.latitude)
-            val location2 = LatLng(13.0253215,78.11)
-            val getLocation = LatLng(location1.latitude,location1.longitude)
-            *//*mMap.addCircle(CircleOptions().center(getLocation).radius(500.0).fillColor(Color.rgb(234,241,242)).strokeColor(Color.rgb(234,241,242)))*//*
-        }
-*/
+
     }
 
     //--------------------------------</Function to get Current Location/>------------------------//
@@ -507,6 +464,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
     //--------------------Function to Create Routes between Source and Destination----------------//
     fun getRoute(view: View) {
 
+       createRoute()
+
+
+    }
+
+    private fun createRoute() {
         val progress = ProgressDialog(this)
         progress.setMessage("Creating Alternate Route");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -568,8 +531,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
             }
 
         }
-
-
 
     }
 
@@ -676,14 +637,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
 
     }
 
-    fun clearEverything(view: View) {
-        mMap.clear()
 
-
-        edt_destination.text = null
-
-
-    }
     fun getDirectionURL(source: LatLng, destination: LatLng, mode: String): String {
         return "https://maps.googleapis.com/maps/api/directions/json?origin=${source.latitude},${source.longitude}&destination=${destination.latitude},${destination.longitude}&sensor=false&mode=${mode}&maptype=normal,+CA&key=AIzaSyCn_Rpi7ierJ-yxJS-xCGSMfAjSfoz7_u4"
         /*"https://maps.googleapis.com/maps/api/directions/json?origin=${source.latitude},${source.longitude}&destination=${destination.latitude},${destination.longitude}&sensor=false&mode=driving"*/
@@ -693,48 +647,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
 
     }
 
-    fun getSourceInflate(view: View) {
-
-    }
-
-    fun getDestinationInflator(view: View) {
 
 
-    }
-
-    private fun destinationLocation() {
-        /* autocompleteFragment =
-             supportFragmentManager.findFragmentById(R.id.fragment_place1) as AutocompleteSupportFragment
-         autocompleteFragment.setPlaceFields(placeFields)
-
-         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-             override fun onPlaceSelected(p0: Place) {
-
-                 myplace2 = p0
-
-                 val queriedLocation = myplace2.latLng
-                 destination = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
-                 edt_destination.visibility = View.VISIBLE
-                 edt_destination.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude)
-
-
-
-
-                 mMap.addMarker(MarkerOptions().position(destination).title("Marker in Source"))
-                 edt_destination.visibility = View.VISIBLE
-
-                 *//*Sourceview!!.visibility = GONE
-                sourceLinear.visibility = VISIBLE*//*
-
-            }
-
-            override fun onError(p0: Status) {
-
-            }
-
-
-        })*/
-    }
 
     fun getSourceLocation(view: View) {
         mMap.clear()
@@ -844,10 +758,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
                     mCurrLocationMarker!!.remove()
                 }
 
-                //move map camera
-             /*   val latLng = LatLng(location.latitude, location.longitude)
-                val cameraPosition = CameraPosition.Builder().target(LatLng(latLng.latitude, latLng.longitude)).zoom(16f).build()
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))*/
+
             }
         }
     }
@@ -911,16 +822,32 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
         when(v?.id)
         {
             R.id.btn_clear_all -> {
-                btn_clear_all.setBackgroundColor(Color.GREEN)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    btn_clear_all.background = getDrawable(R.drawable.pressed_button)
+                    btn_round_routes.background = getDrawable(R.drawable.custom_btn_2)
+                    btn_normal.background = getDrawable(R.drawable.custom_btn_2)
+
+                }
+
+                edt_round_route.visibility = GONE
+                edt_destination.visibility = VISIBLE
                 img_round.visibility = GONE
                 img2.visibility = VISIBLE
-                edt_destination.text = null
+                edt_destination.text = ""
+                edt_destination.setHint("")
                 edt_source.text = null
                 mMap.clear()
 
             }
             R.id.btn_round_routes -> {
-                edt_destination.setText(null)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    btn_round_routes.background = getDrawable(R.drawable.pressed_button)
+                    btn_clear_all.background = getDrawable(R.drawable.custom_btn_2)
+                    btn_normal.background = getDrawable(R.drawable.custom_btn_2)
+
+                }
+
+                edt_destination.setText("")
                 edt_source.setText("My Location")
                 edt_round_route.visibility = VISIBLE
                 edt_destination.visibility = GONE
@@ -929,12 +856,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
                 mMap.clear()
                 getCurrentLocation()
                 mMap.setOnMapClickListener(null)
+                edt_round_route.setHint("Please Enter Length")
                 txt_get_route.setOnClickListener{
-                    Toast.makeText(applicationContext,"Hello Fraand",Toast.LENGTH_SHORT).show()
-                    val URL = getRoundURL(getLocation,10)
-                    GetDirection(URL).execute()
-
-
+                   val OpenRoute = APIRound.client.create(Routes::class.java)
+                    
 
 
                 }
@@ -943,17 +868,31 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
 
             }
             R.id.btn_normal -> {
-                edt_destination.setText(null)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    btn_normal.background = getDrawable(R.drawable.pressed_button)
+                    btn_clear_all.background = getDrawable(R.drawable.custom_btn_2)
+                    btn_round_routes.background = getDrawable(R.drawable.custom_btn_2)
+
+                }
+
+                edt_round_route.visibility = GONE
+                edt_destination.visibility = VISIBLE
+                edt_destination.setHint("Please Enter Destionation")
+                edt_destination.setText("")
                 edt_source.setText("My Location")
                 img_round.visibility = GONE
                 img2.visibility = VISIBLE
                 mMap.clear()
 
                 getCurrentLocation()
+
+
+
+
+                }
             }
         }
     }
 
 
-}
 

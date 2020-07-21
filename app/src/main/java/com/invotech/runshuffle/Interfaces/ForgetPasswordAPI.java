@@ -11,4 +11,5 @@ public interface ForgetPasswordAPI {
     Call<ForgetUser> ForgetUser(
             @Query("email") String email
     );
+
 }
