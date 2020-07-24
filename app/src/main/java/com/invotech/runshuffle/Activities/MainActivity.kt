@@ -1,5 +1,9 @@
 package com.invotech.runshuffle.Activities
 
+/*
+import com.invotech.runshuffle.Models.KotlinRound
+*/
+
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -45,8 +49,8 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.gson.Gson
 import com.invotech.runshuffle.Interfaces.Routes
-import com.invotech.runshuffle.Models.RegisterUser
-import com.invotech.runshuffle.Models.RoundMaps
+import com.invotech.runshuffle.Models.Round
+import com.invotech.runshuffle.Models.Round_trip
 import com.invotech.runshuffle.Object.APIRound
 import com.invotech.runshuffle.Object.SaveSharedPreference
 import com.invotech.runshuffle.R
@@ -54,14 +58,13 @@ import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import retrofit2.Call
-import retrofit2.Response
-
 import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
 @Suppress("DEPRECATION")
-class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListener {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClickListener {
 
     //----------------------------------------Assigning Variables---------------------------------//
     private lateinit var customDialogDest: View
@@ -87,9 +90,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
         Place.Field.ADDRESS,
         Place.Field.LAT_LNG
     )
-    private var destMarker : Marker? = null
-    private var sourceMarker : Marker? = null
-    private lateinit var currentMarker : Marker
+    private var destMarker: Marker? = null
+    private var sourceMarker: Marker? = null
+    private lateinit var currentMarker: Marker
+    private var k2 = "5b3ce3597851110001cf6248bda92fbd5b334daca44487ed1f86c865"
 
     //----------------------------------------------------------//
     var mGoogleMap: GoogleMap? = null
@@ -98,16 +102,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
     var mLastLocation: Location? = null
     var mCurrLocationMarker: Marker? = null
     var mFusedLocationClient: FusedLocationProviderClient? = null
-    private lateinit var mapFragment : SupportMapFragment
+    private lateinit var mapFragment: SupportMapFragment
     //----------------------------------------------------------//
 
     //-----------------------------------</Assigning Variables/>----------------------------------//
-    @SuppressLint("ResourceType", "InflateParams")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-       getCurrentLocation()
+        getCurrentLocation()
 
 
 
@@ -122,14 +126,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
         mapFrag = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFrag?.getMapAsync(this)
-//edt_destination
+
         edt_source.setOnClickListener {
             val intent: Intent = Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.FULLSCREEN, placeFields
             )
                 .build(this)
             startActivityForResult(intent, SOURCE_PLACE)
-
 
 
         }
@@ -144,7 +147,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
                     this@MainActivity, "",
                     "Loading. Please wait...", true
                 )
-             val buttonTimer = Timer()
+            val buttonTimer = Timer()
             val progressDialog =
                 ProgressDialog(this@MainActivity)
             if (TextUtils.isEmpty(edt_destination.text.toString())) {
@@ -182,7 +185,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
                             runOnUiThread {
 
 
-
                                 calculateRoute(getLocation, destination, arr[onIndex])
 
                                 mMap.addMarker(MarkerOptions().position(getLocation))
@@ -215,8 +217,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
                     buttonTimer.schedule(object : TimerTask() {
                         override fun run() {
                             runOnUiThread {
-
-
 
 
                                 calculateRoute(source!!, destination, arr[onIndex])
@@ -258,7 +258,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
 
 
             )
-            startActivity(Intent(this@MainActivity,LoginActivity::class.java))
+            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
 
 
         }
@@ -276,28 +276,35 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
         mLocationRequest!!.fastestInterval = 120000
         mLocationRequest!!.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+                == PackageManager.PERMISSION_GRANTED
+            ) {
                 //Location Permission already granted
-                mFusedLocationClient!!.requestLocationUpdates(mLocationRequest, mLocationCallback,
-                    Looper.myLooper())
+                mFusedLocationClient!!.requestLocationUpdates(
+                    mLocationRequest, mLocationCallback,
+                    Looper.myLooper()
+                )
                 mMap.isMyLocationEnabled = true
             } else {
                 //Request Location Permission
                 checkLocationPermission()
             }
         } else {
-            mFusedLocationClient!!.requestLocationUpdates(mLocationRequest, mLocationCallback,
-                Looper.myLooper())
+            mFusedLocationClient!!.requestLocationUpdates(
+                mLocationRequest, mLocationCallback,
+                Looper.myLooper()
+            )
             mMap.isMyLocationEnabled = true
         }
-       /* getCurrentLocation()*/
+        /* getCurrentLocation()*/
 
         mMap.setOnMapClickListener { dest ->
-           /* val markerOptions = MarkerOptions()
+            /* val markerOptions = MarkerOptions()
 
-            mMap.clear()*/
+             mMap.clear()*/
             destination = dest
             edt_destination.setText(dest.latitude.toString() + " , " + dest.longitude)
             edt_destination.textSize = 10f
@@ -309,7 +316,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
                 mMap.addMarker(MarkerOptions().position(getLocation))
                 val markerOptions = MarkerOptions()
                 markerOptions.position(destination)
-                destMarker =  mMap.addMarker(markerOptions)
+                destMarker = mMap.addMarker(markerOptions)
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(destination, 15f))
 
 
@@ -363,15 +370,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
                 .show()
 
 
-
         }
-
 
 
         val task: Task<Location> = fusedLocationProviderClient.lastLocation
         task.addOnSuccessListener { locateUser ->
             getLocation = LatLng(locateUser?.latitude!!, locateUser.longitude)
-            currentMarker =  mMap.addMarker(MarkerOptions().position(getLocation))
+            currentMarker = mMap.addMarker(MarkerOptions().position(getLocation))
 
             /*
             /*edt_source.setText("My Location")*/
@@ -434,12 +439,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
     fun getDestinationLocation(view: View) {
         edt_destination.text = null
         mMap.clear()
-        if (source == null && destination.toString().isNotEmpty())
-        {
+        if (source == null && destination.toString().isNotEmpty()) {
             mMap.addMarker(MarkerOptions().position(getLocation))
-        }
-        else
-        mMap.addMarker(MarkerOptions().position(source!!))
+        } else
+            mMap.addMarker(MarkerOptions().position(source!!))
 
     }
 
@@ -464,7 +467,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
     //--------------------Function to Create Routes between Source and Destination----------------//
     fun getRoute(view: View) {
 
-       createRoute()
+        createRoute()
 
 
     }
@@ -642,12 +645,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
         return "https://maps.googleapis.com/maps/api/directions/json?origin=${source.latitude},${source.longitude}&destination=${destination.latitude},${destination.longitude}&sensor=false&mode=${mode}&maptype=normal,+CA&key=AIzaSyCn_Rpi7ierJ-yxJS-xCGSMfAjSfoz7_u4"
         /*"https://maps.googleapis.com/maps/api/directions/json?origin=${source.latitude},${source.longitude}&destination=${destination.latitude},${destination.longitude}&sensor=false&mode=driving"*/
     }
-    fun getRoundURL(source: LatLng, length : Int): String {
-        return "https://maps.openrouteservice.org/directions?n1={${source.latitude}}&n2={${source.longitude}}&n3=17&a={${source.latitude},${source.longitude}}&b=0&r1={$length}&c=0&k1=en-US&k2=5b3ce3597851110001cf6248bda92fbd5b334daca44487ed1f86c865"
+    fun getRoundURL(source: LatLng, length : Int) :String
+    {
+        return "https://maps.openrouteservice.org/directions?n1={${source.latitude}}&n2={${source.longitude}}&n3=18&a={${source.latitude}},{${source.longitude}},null,null&b=0&r1={${length}}&r2=3&r3=2&c=0&k1=en-US&k2=5b3ce3597851110001cf624869df9cd2c59e4dd083950fb24ff80f83"
 
     }
-
-
 
 
     fun getSourceLocation(view: View) {
@@ -660,7 +662,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == SOURCE_PLACE && resultCode == Activity.RESULT_OK ) {
+        if (requestCode == SOURCE_PLACE && resultCode == Activity.RESULT_OK) {
             mMap.clear()
             edt_destination.setText("")
             val sourceplace = Autocomplete.getPlaceFromIntent(data!!)
@@ -670,30 +672,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
             edt_source.textSize = 10f
             currentMarker.remove()
             val markerOptions = MarkerOptions()
-            if(sourceMarker != null)
-            {
+            if (sourceMarker != null) {
                 sourceMarker!!.remove()
             }
-            if (source == null && destination.toString().isNotEmpty())
-            {
+            if (source == null && destination.toString().isNotEmpty()) {
                 markerOptions.position(getLocation)
-            }
-            else
-            {
+            } else {
                 markerOptions.position(source!!)
 
             }
 
 
-            sourceMarker =  mMap.addMarker(markerOptions)
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(source!!,15f))
+            sourceMarker = mMap.addMarker(markerOptions)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(source!!, 15f))
 
 
-
-
-        }
-        else if (requestCode == DEST_PLACE && resultCode == Activity.RESULT_OK)
-        {
+        } else if (requestCode == DEST_PLACE && resultCode == Activity.RESULT_OK) {
 
             mMap.clear()
 
@@ -705,24 +699,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
             btn_destination_location.isEnabled = true
 
             val markerOptions = MarkerOptions()
-            if(destMarker != null)
-            {
+            if (destMarker != null) {
 
                 destMarker!!.remove()
             }
             markerOptions.position(destination)
             mMap.addMarker(markerOptions)
-            if (source == null && destination.toString().isNotEmpty())
-            {
+            if (source == null && destination.toString().isNotEmpty()) {
                 mMap.addMarker(MarkerOptions().position(getLocation))
 
-            }
-            else
+            } else
                 mMap.addMarker(MarkerOptions().position(source!!))
-
-
-
-
 
 
             // do query with address
@@ -747,6 +734,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
         edt_destination.setText(null)
         mMap.clear()
     }
+
     var mLocationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             val locationList = locationResult.locations
@@ -765,11 +753,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
 
     private fun checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED
+        ) {
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            ) {
 
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
@@ -778,34 +770,48 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
                     .setTitle("Location Permission Needed")
                     .setMessage("This app needs the Location permission, please accept to use location functionality")
                     .setPositiveButton("OK") { dialogInterface, i -> //Prompt the user once explanation has been shown
-                        ActivityCompat.requestPermissions(this@MainActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                            REQUEST_CODE)
+                        ActivityCompat.requestPermissions(
+                            this@MainActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                            REQUEST_CODE
+                        )
                     }
                     .create()
                     .show()
             } else {
                 // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    REQUEST_CODE)
+                ActivityCompat.requestPermissions(
+                    this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    REQUEST_CODE
+                )
             }
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         when (requestCode) {
             REQUEST_CODE -> {
 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.size > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
 
                     // permission was granted, yay! Do the
                     // location-related task you need to do.
-                    if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED) {
-                        mFusedLocationClient!!.requestLocationUpdates(mLocationRequest,
-                            mLocationCallback, Looper.myLooper())
+                    if (ContextCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        )
+                        == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        mFusedLocationClient!!.requestLocationUpdates(
+                            mLocationRequest,
+                            mLocationCallback, Looper.myLooper()
+                        )
                         mMap.isMyLocationEnabled = true
                     }
                 } else {
@@ -819,8 +825,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
 
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
+        when (v?.id) {
             R.id.btn_clear_all -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     btn_clear_all.background = getDrawable(R.drawable.pressed_button)
@@ -846,7 +851,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
                     btn_normal.background = getDrawable(R.drawable.custom_btn_2)
 
                 }
-
                 edt_destination.setText("")
                 edt_source.setText("My Location")
                 edt_round_route.visibility = VISIBLE
@@ -857,13 +861,33 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
                 getCurrentLocation()
                 mMap.setOnMapClickListener(null)
                 edt_round_route.setHint("Please Enter Length")
-                txt_get_route.setOnClickListener{
-                   val OpenRoute = APIRound.client.create(Routes::class.java)
-                    
+                txt_get_route.setOnClickListener {
+                  
+                    /*val URL = getRoundURL(getLocation,2)
+                    GetDirection(URL).execute()*/
 
+                    val RoundRoutes = APIRound.client.create(Routes::class.java)
+                    val call = RoundRoutes.getRoundCoordinates("5b3ce3597851110001cf624869df9cd2c59e4dd083950fb24ff80f83",
+                        mutableListOf(mutableListOf(getLocation.longitude,getLocation.latitude)),"1","1")
 
+                    call.enqueue(object : Callback<Round> {
+                        override fun onFailure(call: Call<Round>, t: Throwable) {
+
+                             Toast.makeText(applicationContext,"Failed",Toast.LENGTH_SHORT).show()
+                        }
+
+                        override fun onResponse(call: Call<Round>, response: Response<Round>) {
+                            if (response.isSuccessful)
+                            {
+                            Toast.makeText(applicationContext,"Successful",Toast.LENGTH_SHORT).show()
+                            }
+                            else
+                                Toast.makeText(applicationContext,"Failed Response: "+ response.code().toString(),Toast.LENGTH_SHORT).show()
+
+                        }
+
+                    })
                 }
-
 
 
             }
@@ -887,12 +911,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback,View.OnClickListene
                 getCurrentLocation()
 
 
-
-
-                }
             }
         }
     }
+}
 
 
 

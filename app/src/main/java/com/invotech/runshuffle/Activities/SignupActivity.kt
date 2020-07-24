@@ -128,8 +128,6 @@ class SignupActivity : AppCompatActivity() {
 
 
                                 override fun onFailure(call: Call<RegisterUser>, t: Throwable) {
-
-                                    Toast.makeText(applicationContext,"This Email Has been Registered Already",Toast.LENGTH_SHORT).show()
                                 }
 
                                 override fun onResponse(call: Call<RegisterUser>, response: Response<RegisterUser>) {
@@ -140,9 +138,8 @@ class SignupActivity : AppCompatActivity() {
                                     }
                                     else
                                     {
-
-
-
+                                        Toast.makeText(applicationContext,"Succesffuly Registered",Toast.LENGTH_SHORT).show()
+                                        startActivity(Intent(this@SignupActivity,MainActivity::class.java))
                                     }
 
                                 }
@@ -155,8 +152,7 @@ class SignupActivity : AppCompatActivity() {
                             progressDialog.max = 100;
                             progressDialog.max;
                             progressDialog.show()*/
-                            Toast.makeText(applicationContext,"Succesffuly Registered",Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this@SignupActivity,MainActivity::class.java))
+
 
 
 
