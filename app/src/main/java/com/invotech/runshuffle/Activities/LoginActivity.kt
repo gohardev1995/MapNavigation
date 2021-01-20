@@ -65,18 +65,7 @@ class LoginActivity : AppCompatActivity() {
             loginForm.setVisibility(View.VISIBLE)
         }
 
-        //----------------------Adding Shared Preference to save Credentials----------------------//
 
-        /*val loginPreferences = getSharedPreferences("prefsName", MODE_PRIVATE)
-        val loginPrefsEditor = loginPreferences.edit()
-        val saveLogin = loginPreferences.getBoolean("saveLogin", false);
-        if (saveLogin == true) {
-            edt_email.setText(loginPreferences.getString("username", ""))
-            edt_password.setText(loginPreferences.getString("password", ""))
-            chk_remember.setChecked(true)
-
-        }*/
-        //--------------------</Adding Shared Preference to save Credentials/>--------------------//
         //----------------------Adding OnClick Listerns to Buttons--------------------------------//
         txt_create_account.setOnClickListener(View.OnClickListener {
             startActivity(Intent(this, SignupActivity::class.java))
@@ -139,16 +128,7 @@ class LoginActivity : AppCompatActivity() {
 
 
 
-                                    /*intent.putExtra("email",edt_email.text.toString())
-                                    intent.putExtra("password",edt_password.text.toString())
 
-                                    val username = intent.getStringExtra("email")
-                                    val password = intent.getStringExtra("password")
-
-                                    edt_email.setText(username)
-                                    edt_password.setText(password)
-                                    Log.d("gohar",username)
-                                    Log.d("gohar",password)*/
 
 
 
@@ -164,12 +144,7 @@ class LoginActivity : AppCompatActivity() {
 
                         })
 
-                        /*progressDialog.setTitle("ProgressDialog");
-                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                        progressDialog.window
-                        progressDialog.max = 100;
-                        progressDialog.max;
-                        progressDialog.show()*/
+
                         val intent = Intent(applicationContext,MainActivity::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK)
                         Toast.makeText(applicationContext, "Succesfully Logged In ", Toast.LENGTH_SHORT).show()

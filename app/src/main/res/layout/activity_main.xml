@@ -256,48 +256,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
-            android:orientation="horizontal"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:weightSum="3">
-
-            <Button
-                android:id="@+id/btn_clear_all"
-                android:textColor="#ffffff"
-                android:text="Clear All"
-                android:background="@drawable/custom_btn_2"
-                android:onClick="clearAll"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp" />
-
-            <Button
-                android:id="@+id/btn_normal"
-                android:layout_marginRight="20dp"
-                android:textColor="#ffffff"
-                android:text="Normal"
-                android:background="@drawable/custom_btn_2"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_weight="1" />
-
-            <Button
-                android:id="@+id/btn_round_routes"
-                android:textColor="#ffffff"
-                android:text="Round"
-                android:background="@drawable/custom_btn_2"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_weight="1" />
-
-
-        </LinearLayout>
 
 
 

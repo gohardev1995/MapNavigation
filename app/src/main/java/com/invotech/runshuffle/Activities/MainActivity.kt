@@ -48,23 +48,16 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.gson.Gson
-import com.invotech.runshuffle.Interfaces.Routes
-import com.invotech.runshuffle.Models.Round
-import com.invotech.runshuffle.Models.Round_trip
-import com.invotech.runshuffle.Object.APIRound
 import com.invotech.runshuffle.Object.SaveSharedPreference
 import com.invotech.runshuffle.R
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
 @Suppress("DEPRECATION")
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClickListener {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback{
 
     //----------------------------------------Assigning Variables---------------------------------//
     private lateinit var customDialogDest: View
@@ -119,9 +112,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClickListen
         arr.add("walking")
         arr.add("driving")
 
-        btn_round_routes.setOnClickListener(this)
-        btn_clear_all.setOnClickListener(this)
-        btn_normal.setOnClickListener(this)
+
 
         mapFrag = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -408,7 +399,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClickListen
                 val queriedLocation = myplace.latLng
                 mMap.clear()
                 source = LatLng(queriedLocation!!.latitude, queriedLocation.longitude)
-                edt_source.visibility = View.VISIBLE
+                edt_source.visibility = VISIBLE
                 edt_source.setText(queriedLocation.latitude.toString() + " , " + queriedLocation.longitude)
                 mMap.addMarker(MarkerOptions().position(source!!).title("Source"))
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(source, 15f))
@@ -417,10 +408,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClickListen
 
 
                 mMap.addMarker(MarkerOptions().position(source!!).title("Marker in Source"))
-                edt_source.visibility = View.VISIBLE
+                edt_source.visibility = VISIBLE
 
-                /*Sourceview!!.visibility = GONE
-                sourceLinear.visibility = VISIBLE*/
+
 
             }
 
@@ -645,11 +635,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClickListen
         return "https://maps.googleapis.com/maps/api/directions/json?origin=${source.latitude},${source.longitude}&destination=${destination.latitude},${destination.longitude}&sensor=false&mode=${mode}&maptype=normal,+CA&key=AIzaSyCn_Rpi7ierJ-yxJS-xCGSMfAjSfoz7_u4"
         /*"https://maps.googleapis.com/maps/api/directions/json?origin=${source.latitude},${source.longitude}&destination=${destination.latitude},${destination.longitude}&sensor=false&mode=driving"*/
     }
-    fun getRoundURL(source: LatLng, length : Int) :String
-    {
-        return "https://maps.openrouteservice.org/directions?n1={${source.latitude}}&n2={${source.longitude}}&n3=18&a={${source.latitude}},{${source.longitude}},null,null&b=0&r1={${length}}&r2=3&r3=2&c=0&k1=en-US&k2=5b3ce3597851110001cf624869df9cd2c59e4dd083950fb24ff80f83"
 
-    }
 
 
     fun getSourceLocation(view: View) {
@@ -824,96 +810,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClickListen
     }
 
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.btn_clear_all -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    btn_clear_all.background = getDrawable(R.drawable.pressed_button)
-                    btn_round_routes.background = getDrawable(R.drawable.custom_btn_2)
-                    btn_normal.background = getDrawable(R.drawable.custom_btn_2)
 
-                }
-
-                edt_round_route.visibility = GONE
-                edt_destination.visibility = VISIBLE
-                img_round.visibility = GONE
-                img2.visibility = VISIBLE
-                edt_destination.text = ""
-                edt_destination.setHint("")
-                edt_source.text = null
-                mMap.clear()
-
-            }
-            R.id.btn_round_routes -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    btn_round_routes.background = getDrawable(R.drawable.pressed_button)
-                    btn_clear_all.background = getDrawable(R.drawable.custom_btn_2)
-                    btn_normal.background = getDrawable(R.drawable.custom_btn_2)
-
-                }
-                edt_destination.setText("")
-                edt_source.setText("My Location")
-                edt_round_route.visibility = VISIBLE
-                edt_destination.visibility = GONE
-                img2.visibility = GONE
-                img_round.visibility = VISIBLE
-                mMap.clear()
-                getCurrentLocation()
-                mMap.setOnMapClickListener(null)
-                edt_round_route.setHint("Please Enter Length")
-                txt_get_route.setOnClickListener {
-                  
-                    /*val URL = getRoundURL(getLocation,2)
-                    GetDirection(URL).execute()*/
-
-                    val RoundRoutes = APIRound.client.create(Routes::class.java)
-                    val call = RoundRoutes.getRoundCoordinates("5b3ce3597851110001cf624869df9cd2c59e4dd083950fb24ff80f83",
-                        mutableListOf(mutableListOf(getLocation.longitude,getLocation.latitude)),"1","1")
-
-                    call.enqueue(object : Callback<Round> {
-                        override fun onFailure(call: Call<Round>, t: Throwable) {
-
-                             Toast.makeText(applicationContext,"Failed",Toast.LENGTH_SHORT).show()
-                        }
-
-                        override fun onResponse(call: Call<Round>, response: Response<Round>) {
-                            if (response.isSuccessful)
-                            {
-                            Toast.makeText(applicationContext,"Successful",Toast.LENGTH_SHORT).show()
-                            }
-                            else
-                                Toast.makeText(applicationContext,"Failed Response: "+ response.code().toString(),Toast.LENGTH_SHORT).show()
-
-                        }
-
-                    })
-                }
-
-
-            }
-            R.id.btn_normal -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    btn_normal.background = getDrawable(R.drawable.pressed_button)
-                    btn_clear_all.background = getDrawable(R.drawable.custom_btn_2)
-                    btn_round_routes.background = getDrawable(R.drawable.custom_btn_2)
-
-                }
-
-                edt_round_route.visibility = GONE
-                edt_destination.visibility = VISIBLE
-                edt_destination.setHint("Please Enter Destionation")
-                edt_destination.setText("")
-                edt_source.setText("My Location")
-                img_round.visibility = GONE
-                img2.visibility = VISIBLE
-                mMap.clear()
-
-                getCurrentLocation()
-
-
-            }
-        }
-    }
 }
 
 
